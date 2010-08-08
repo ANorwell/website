@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Arron Norwell</title>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <script type="text/javascript" src="graph/graph.js"></script>
+</head>
+
+<body onload="setup(document.getElementById('graph')); controller.onResize(document.getElementById('main'))">
+  <div class="leftContainer">
+    <script type="text/javascript" src="js/menu.js"></script>
+  </div>
+  <script type="text/javascript" src="js/header.js"></script>
+  <!-- content -->
+  <div class="main" id="main">
+
+
+    <h1 style="display:inline">
+      Graph Drawing Tool
+    </h1>
+    <h3 style="display:inline;float:right">
+      June 13, 2010
+    </h3>
+
+
+    <canvas id="graph" style="border: 1px; border-style:solid;" width="500" height="500" onmousedown="controller.mouseDownHandler(event)" onmousemove="controller.mouseMoveHandler(event)" onmouseup="controller.mouseUpHandler(event)" ></canvas>
+    <br/>
+    <h3>Select to draw:</h3>
+    <button type="button" onclick="controller.buttonHandler('vertex')">Vertices</button>
+    <button type="button" onclick="controller.buttonHandler('edge')"> Edges</button>
+  </div>
+  </body>
+</html>
