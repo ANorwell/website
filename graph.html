@@ -7,7 +7,8 @@
   <script type="text/javascript" src="graph/graph.js"></script>
 </head>
 
-<body onload="setup(document.getElementById('graph')); controller.onResize(document.getElementById('main'))">
+<body onload="setup(document.getElementById('graph')); controller.onResize(document.getElementById('canvasparent'))">
+
   <div class="leftContainer">
     <script type="text/javascript" src="js/menu.js"></script>
   </div>
@@ -16,19 +17,31 @@
   <div class="main" id="main">
 
 
-    <h1 style="display:inline">
+    <h1 class="title">
       Graph Drawing Tool
     </h1>
-    <h3 style="display:inline;float:right">
+    <h3 class="date">
       June 13, 2010
     </h3>
 
-
-    <canvas id="graph" style="border: 1px; border-style:solid;" width="500" height="500" onmousedown="controller.mouseDownHandler(event)" onmousemove="controller.mouseMoveHandler(event)" onmouseup="controller.mouseUpHandler(event)" ></canvas>
+    <div id="canvasparent">
+    <canvas id="graph" style="border: 1px; border-style:solid" width="500" height="500" onmousedown="controller.mouseDownHandler(event)" onmousemove="controller.mouseMoveHandler(event)" onmouseup="controller.mouseUpHandler(event)"></canvas>
     <br/>
+    </div>
+
     <h3>Select to draw:</h3>
     <button type="button" onclick="controller.buttonHandler('vertex')">Vertices</button>
     <button type="button" onclick="controller.buttonHandler('edge')"> Edges</button>
+
+    <ul>
+      <li>      
+        <span style="font-weight:bold">Click</span> to select or draw vertices or edges.
+      </li>
+      <li>
+        <span style="font-weight:bold">Drag</span> to move vertices.
+      </li>
+    </ul>    
   </div>
+  <script type="text/javascript" src="js/footer.js"></script>
   </body>
 </html>
