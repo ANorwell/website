@@ -2,6 +2,24 @@ body {
     background-color:#CFE2F8;
 }
 
+body > .wrapper {
+    height: auto;
+    min-height: 100%;
+}
+
+.footer {
+    font-size:0.7em;
+    font-family:sans-serif;
+    text-align:center;
+    clear: both;
+    position: relative;
+    z-index: 10;
+    height: 2em;
+    margin-top: -2em;
+    width:100%;
+}
+
+
 .menu {
     background-color: #FFFFFF;
     width:190px;
@@ -23,10 +41,11 @@ body {
     border-style:solid;
     border-color:#658AB8;
     margin:10px;
-    margin-left: 210px;
-    padding:8px;
-    padding-left:20px;
+    margin-left: 220px;
+    padding:10px;
+    padding-left:10px;
     padding-right:20px;
+    padding-bottom:20px;
     box-shadow: 5px 5px 10px #000000;
     -moz-box-shadow: 5px 5px 10px #000000;
     -webkit-box-shadow: 5px 5px 10px #000000;
@@ -45,10 +64,10 @@ body {
 */
 }
 
+
 .leftContainer {
     width:210px;
     float:left;
-    
 }
 
 .left {
@@ -87,7 +106,14 @@ h1 {
     font-weight:bold;
     color: #0066CC;
     font-size:18px;
+
 }
+
+.title {
+    display:inline;
+}
+
+
 
 h2 {
     font-family:sans-serif;
@@ -103,12 +129,18 @@ h3 {
     font-size:12px;
 }
 
+.date {
+    float:right;
+}
+
 p {
     font-family:sans-serif;
+    margin:0.5em;
 }
 
 ul {
     font-family:sans-serif;
+    margin-left: 2em;
 }
 
 ol {
