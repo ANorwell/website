@@ -6,6 +6,7 @@ import json
 import datetime
 import os
 import re
+import sys
 
 #Database info
 gHost = "anorwell.powwebmysql.com"
@@ -16,7 +17,7 @@ gDB = "arron"
 gPostTable = "post"
 gCommentTable = "comment"
 
-print "Content-Type: text/html\n\n"
+
 
 def connect():
     try:
@@ -36,7 +37,23 @@ def connect():
 def processPost():
     form = cgi.FieldStorage();
     if ( "title" not in form)  or ( "content" not in form):
-        return "Invalid POST: title or content missing"
+        print "Status: 400 BAD REQUEST"
+        print "Content-Type: text/html\r\n"
+        print "Invalid POST: title or content missing"
+        return;
+        
+    if ("password" not in form) or (form["password"] != 'select'):
+        print "Status: 400 BAD REQUEST"
+        print "Content-Type: text/html\r\n"
+        print "Invalid POST: password incorrect"
+        return;
+
+
+
+    #TODO: sanitize/process content?
+
+    print "Status: 200 OK"
+    print "Content-Type: text/html\r\n"
         
     addEntry(
         table = "post",
@@ -44,7 +61,6 @@ def processPost():
         type = form.getfirst("type"),
         content = form.getfirst("content")
     )
-    return "Post Added"
 
 def addEntry(**args):
     
@@ -65,22 +81,6 @@ def addEntry(**args):
                                )
     print "Ran addEntry"
 
-def processGet():
-    query = os.environ["QUERY_STRING"]
-    params = {}
-
-    if query:
-        pairs = re.split('\s*[&;]', query)
-        params = dict(map( lambda x: re.split('\s*=\s*', x), pairs))
-
-    if ("id" in params):
-        getData(id = params["id"],
-            maxposts = params["maxposts"] if "maxposts" in params else str(5)
-            )
-    else:
-        getData(maxposts = params["maxposts"] if "maxposts" in params else str(5))
-            
-
 """Will return JSON list of :
 [ { class:
     named attributes for this class
@@ -89,34 +89,47 @@ def processGet():
 ]
 
 """    
-def getData(**args):
+def processGet():
+    query = os.environ["QUERY_STRING"]
+    args = {}
+
+    print "Status: 200 OK"
+    print "Content-Type: application/json\r\n"
+
+    if query:
+        pairs = re.split('\s*[&;]', query)
+        args = dict(map( lambda x: re.split('\s*=\s*', x), pairs))
+
+
     conn = connect()
     cursor = conn.cursor()
 
-    #Get the post itself
-    if ("id" in args):
-        filter = "id = %s"
-        filterargs = args["id"]
+    #Make query to get post(s), based on if id and tag are in query string
+    if ("id" in args and re.search('^\d+$', args["id"] ) ):
+        filter = "id = " + args["id"]
+    elif ("tag" in args and re.search('^\w+$', args["tag"]) ):
+        filter = 'type LIKE "' + args["tag"] + '"'
     else:
-        filter = "%s"
-        filterargs = "1"
+        filter = "1"
+
     result = getSingleTableData(
         ['id','title','content','date','type'],
         table = gPostTable,
         cursor = cursor,
         filter = filter,
-        filterargs = filterargs,
-        max = args["maxposts"]
+        max = args["maxposts"] if "maxposts" in args else '5'
         )
 
     #Get the comments for that post
     #TODO
     #result.append ...
 
-
-    #Return the json data
     print json.dumps(result);
 
+"""
+Perform a single query with a WHERE and an order
+Returns a list of dicts representing each item
+"""
 def getSingleTableData(rownames, **args):
     cursor = args["cursor"]
     getQuery = " ".join(
@@ -132,17 +145,23 @@ def getSingleTableData(rownames, **args):
           args["max"]
           ]
         )
-    cursor.execute(getQuery, args["filterargs"] )
+
+    sys.stderr.write("Query is: " + getQuery + "\n");
+    
+    cursor.execute(getQuery )
 
     def processRow(row):
         return dict(zip(rownames,
-                        map(lambda x: x.ctime() if isinstance(x, datetime.datetime) else x, row)))
+                        map(lambda x: x.isoformat() if isinstance(x, datetime.datetime) else x, row)))
 
-    #return a dict for each entry. also, sanitize
+    #return a dict for each entry.
     return map(processRow, cursor.fetchall() )
 
 
+
 if (os.environ["REQUEST_METHOD"] == 'POST'):
+    sys.stderr.write("handling a POST request at" + datetime.datetime.now().ctime() + "\n")
     processPost()
 else:
+    sys.stderr.write("handling a GET request at" + datetime.datetime.now().ctime() + "\n")
     processGet()

@@ -11,6 +11,8 @@ window.onresize = function() {
     controller.onResize(parent);
 };
 
+
+
 ///////////
 // Classes
 ///////////
@@ -26,9 +28,6 @@ function setup( canvas) {
     var step = function() { V.draw()  }
     setInterval(step, 50)
 }
-
-
-
 
 function Controller(view, graph) {
     this.view = view;
@@ -119,7 +118,7 @@ function Controller(view, graph) {
 
     //ONRESIZE
     this.onResize = function(parent) {
-        this.view.canvas.width = parent.offsetWidth  - 40; //TODO should be style.paddingLeft + style.paddingRight but this doesn't work ?
+        this.view.canvas.width = parent.offsetWidth - 10; //TODO should be style.paddingLeft + style.paddingRight but this doesn't work ?
     }
 
 

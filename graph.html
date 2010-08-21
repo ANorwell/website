@@ -4,15 +4,16 @@
 <head>
   <title>Arron Norwell</title>
   <link rel="stylesheet" type="text/css" href="style.css" />
+  <script type="text/javascript" src="js/shared.js"/>
   <script type="text/javascript" src="graph/graph.js"></script>
 </head>
 
 <body onload="setup(document.getElementById('graph')); controller.onResize(document.getElementById('canvasparent'))">
 
   <div class="leftContainer">
-    <script type="text/javascript" src="js/menu.js"></script>
+    <script type="text/javascript">drawMenu()</script>
   </div>
-  <script type="text/javascript" src="js/header.js"></script>
+  <script type="text/javascript">drawHeader()</script>
   <!-- content -->
   <div class="main" id="main">
 
@@ -42,6 +43,6 @@
       </li>
     </ul>    
   </div>
-  <script type="text/javascript" src="js/footer.js"></script>
+  <script type="text/javascript">drawFooter()</script>
   </body>
 </html>

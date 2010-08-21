@@ -3,17 +3,17 @@ document.write( ' <a href = "index.html">');
 document.write( '      <canvas id="canvas" width="150" height="150" class="logo"></canvas>');
 document.write( '</a>');
 document.write('<script type="text/javascript" src="js/canvas.js"></script>'); 
-document.write( '      <a id="canvasSize" onClick="canvasSize()">+</a>' );
+//document.write( '      <a id="canvasSize" onClick="canvasSize()">+</a>' );
 
-document.write( '      <br/> ' );
-document.write( '      <a class="menutext" href="graphics.html">Graphics</a><br/> ');
-document.write( '      <a class="menutext" href="webgl.html">Webgl</a><br/> ');
-document.write( '      <a class="menutext" href="music.html">Music</a><br/> ');
-document.write( '      <a class="menutext" href="canvas.html">HTML Canvas</a><br/> ');
-document.write( '      <a class="menutext" href="graph.html">Graph Drawing</a> ');
+document.write( '      <br/> ' )
+
+document.write( '      <a class="menutext" href="index.html">Read</a><br/> ');
+document.write( '      <a class="menutext" href="listen.html">Listen</a><br/> ');
+document.write( '      <a class="menutext" href="look.html">Look</a><br/> ');
+document.write( '      <a class="menutext" href="code.html">Code</a><br/> ');
+document.write( '      <a class="menutext" href="about.html">About</a><br/> ');
 document.write( '    <br/> ');
 document.write( '  </div> ');
-
 
 //set the default canvas size
 gCanvasHeight = 150;
