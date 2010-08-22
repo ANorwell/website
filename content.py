@@ -17,6 +17,7 @@ gDB = "arron"
 gPostTable = "post"
 gCommentTable = "comment"
 
+gSongDirectory = 'src/music/'
 
 
 def connect():
@@ -36,50 +37,82 @@ def connect():
 
 def processPost():
     form = cgi.FieldStorage();
-    if ( "title" not in form)  or ( "content" not in form):
-        print "Status: 400 BAD REQUEST"
-        print "Content-Type: text/html\r\n"
-        print "Invalid POST: title or content missing"
-        return;
         
-    if ("password" not in form) or (form["password"] != 'select'):
+    if ("password" not in form) or (form["password"].value != 'select'):
         print "Status: 400 BAD REQUEST"
         print "Content-Type: text/html\r\n"
         print "Invalid POST: password incorrect"
         return;
 
-
-
     #TODO: sanitize/process content?
 
     print "Status: 200 OK"
     print "Content-Type: text/html\r\n"
-        
-    addEntry(
-        table = "post",
-        title = form.getfirst("title"),
-        type = form.getfirst("type"),
-        content = form.getfirst("content")
-    )
 
-def addEntry(**args):
+    if ("songdata" in form):  #it is music
+
+        addEntry(
+            "music",
+            name = form.getfirst("name"),
+            filename = form["songdata"].filename,
+        )
+
+        uploadSong(form["songdata"].filename, form["songdata"])
+        print "Added song " + form.getfirst("name")
+    else:
+        addEntry(
+            "post",
+            title = form.getfirst("title"),
+            type = form.getfirst("type"),
+            content = form.getfirst("content")
+        )
+        print "Added post " + form.getfirst("title")
+
+def addEntry(table, **args):
     
     conn = connect()
     cursor = conn.cursor()
+
+    nameString = '(date,' + ','.join(args.iterkeys()) + ')';
+
+    valueString = 'VALUES (NOW()'
+    for k in args.keys():
+        valueString = valueString + ', %s'
+    valueString = valueString + ')'
+
     postQuery = " ".join(
         [ 'INSERT INTO',
-          args["table"],
+          table,
+          nameString,
+          valueString,
+          ]
+        )
+
+
+    """    
+    postQuery = " ".join(
+        [ 'INSERT INTO',
+          table,
           '(title,content,content2,content3,date,type)',
           'VALUES (%s, %s, %s, %s, NOW(), %s)'
           ]
         )
-    cursor.execute(postQuery, (args["title"],
-                               args["content"],
-                               args["content2"] if "content2" in args else '',
-                               args["content3"] if "content3" in args else '',
-                               args["type"])
-                               )
-    print "Ran addEntry"
+    """
+    print "Running: " + postQuery + " with vals:",args.values(), "<br/>\n"
+    cursor.execute(postQuery, args.values() )
+
+
+def uploadSong(name, filePost):
+    filepath = gSongDirectory + name
+    print "Trying to create", filepath, "<br>\n"
+    if os.path.isfile(filepath):
+        print "File", filepath, "already exists\n"
+        return 0
+    out = open(filepath, 'w');
+    for line in filePost.file:
+        out.write(line)
+
+    return 1
 
 """Will return JSON list of :
 [ { class:

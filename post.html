@@ -4,6 +4,7 @@
     <title> Post </title>
   </head>
   <body>
+    <h2>Submit Post</h2>
     <form action="content.py" name="submit post" method="post">
       Title: <input type="text" name="title"/><br/>
       Tags: <input type="text" name="type"/><br/>
@@ -11,6 +12,16 @@
       Password: <input type="password" name="password"></input><br/>
       <input type="submit" value="POST!"/>
     </form>
+
+    <h2>Add Song</h2>
+    <form action="content.py" name="submit post" method="post"  enctype="multipart/form-data">
+      Name: <input type="text" name="name"/><br/>
+      File: <input type="file" name="songdata"/><br/>
+      Password: <input type="password" name="password"></input><br/>
+      <input type="submit" value="POST!"/>
+    </form>
+
+    
   </body>
 </html>
       

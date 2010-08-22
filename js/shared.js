@@ -57,7 +57,7 @@ function postContent() {
     var form = document.createElement("form");
     form.setAttribute("method", "POST");
     form.setAttribute("action", "content.py");
-    //set inputs
+    //TODO set inputs
     form.submit();
 }
 
