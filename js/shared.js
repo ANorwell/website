@@ -6,6 +6,11 @@ gCanvasWidth = 150;
 
 gServerUTCDifference = 240;
 
+//Multiple calls to getContent will increment gFirstPost, so that
+//each call will get the next (older) batch of posts.
+gFirstPost = 0;
+
+
 function drawMenu() {
     document.write( '  <div class="menu" id="menu">  ');
     document.write( ' <a href = "index.html">');
@@ -61,7 +66,8 @@ function postContent() {
     form.submit();
 }
 
-function getContent() {
+function getContent(tag, max) {
+    max = max || 5;
     var req = new XMLHttpRequest();
     req.onreadystatechange = function() {
         if ( (req.readyState == 4) && (req.status == 200) ) { //completed OK
@@ -70,20 +76,35 @@ function getContent() {
             for(var post in data) {
                 var postHtml;
                 var curPost = data[post];
-                console.log(curPost);
 
                 if (curPost.title) { //it is a post and not a comment
                     postHtml = getPostHtml( curPost.title, curPost.date, curPost.type,
                                             curPost.content);
-                    console.log("got post " + postHtml);
                     $("#content").append(postHtml);    
                 }
             }
         }
     }
-    
-    req.open("GET", "content.py", true);
+
+    var params = getParams();
+    var queryString = "?";
+    if (gFirstPost) {
+        queryString += "first=" + gFirstPost + "&";
+    }
+    if (tag) {
+        queryString += "tag=" + tag + "&";
+    }
+    if (max) {
+        queryString += "maxposts=" + max + "&";
+    }
+    for (key in params) {
+        queryString += key + "=" + params[key] + "&";
+    }
+    queryString = queryString.replace(/&$/, "");
+
+    req.open("GET", "content.py" + queryString, true);
     req.send("");
+    gFirstPost += max;
 }
 
 //transforms an iso datestring to one in the user's timezone.
@@ -95,8 +116,6 @@ function toUserDate(isoDate) {
     // iso: 2010-08-15T01:11:00
     var regex = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/;
     var d = isoDate.match(regex);
-    console.log("isodate: ", isoDate, "tzoffset", tzOffset);
-    console.log("toUserDate: ", d[0], d[1], d[2], d[3], d[4], d[5]);
 
     if (d) {
         var date = new Date(d[1], d[2] - 1, d[3], d[4], d[5]- tzOffset, d[6]);
@@ -123,7 +142,6 @@ function getPostHtml(title, date, type, content) {
         content +
         "</div>\n";
 }
-    
 
 //given a post id, filters just the associated comments
 function getCommentsForId(data, id) {
@@ -135,5 +153,21 @@ function getCommentsForId(data, id) {
     }
     return comments;
 }
-    
+
+
+//helper to get param pairs from query string
+function getParams() {
+    //parse the url for song= param, and start that song
+    var params = {};
+    var url = parent.document.URL;
+
+    if (url.match(/\?/)) {
+        var pairs = url.replace(/#.*$/, '').replace(/^.*\?/, '').split(/[&;]/);
+        for (var p in pairs) {
+            var keyPair = pairs[p].split(/=/);
+            params[keyPair[0]] = keyPair[1];
+        }
+    }
+    return params;
+}
     

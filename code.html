@@ -1,70 +1,26 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <title>Arron Norwell</title>
-  <link rel="stylesheet" type="text/css" href="style.css" />
-  <script src="http://www.google.com/jsapi?key=ABQIAAAAvBr3E5gjsEcbIKWhctpmAxQgVv7vPtNB8raRdaojY-Zd910d9BQG8OuNvGEwAlL4IOoefK_6q9is3A" type="text/javascript"></script>
-  <script src="js/shared.js" type="text/javascript"></script>
-</head>
+  <head>
+    <title>Arron Norwell</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <script src="js/shared.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <div class="leftContainer">
+      <script type="text/javascript">drawMenu()</script>
+    </div>
 
-<body>
-  <div class="leftContainer">
-    <script type="text/javascript">drawMenu()</script>
-  </div>
-
-  <script type="text/javascript">drawHeader()</script>
-  
-  <!-- content -->
-
-  <div class="main" id="graphtool">
-    <h1 class="title">
-      Graph Drawing Tool
-    </h1>
-    <h3 class="date">
-      June 13, 2010
-    </h3>
-
-    <p>  <a href="graph.html">Graph Drawing Tool</a> </p>
-    <p>
-      This uses html 5 canvas element to give an interface for creating undirected graphs.
-    </p>
-  </div>
-
-  <div class="main" id="graphics">
-    <h1 class="title">
-      Canvas Logos
-    </h1>
-    <h3 class="date">
-      June 13, 2010
-    </h3>
-
-    <p>
-      I've linked large versions of the canvas logos that are used in the top left of the site <a href="canvas.html">on one page here.</a>
-    </p>
-
-  </div>
-
-  <div class="main" id="graphics">
-    <h1 class="title">
-      Graphics
-    </h1>
-    <h3 class="date">
-      June 13, 2010
-    </h3>
-
-    <p>
-      Here's some standalone utility C++ classes from the graphics stuff i was working on last year.  Sometime, it would be nice to put everything I was doing up here, and maybe even port it to webGL.  That probably won't happen, though.
-    </p>
-    <ul>
-      <li>
-        <a href="http://gist.github.com/521763"> Vector/Quaternion Implementation</a>
-      </li>
-      <li>
-        <a href="http://gist.github.com/521827">Quaternion Camera</a>
-      </li>
-    </ul>
-  </div>
-  <script type="text/javascript">drawFooter()</script>
-</body>
+    <script type="text/javascript">drawHeader()</script>
+    
+    <!-- content -->
+    <div id="content">
+    </div>
+    <div class="allposts">
+      <a onclick="getContent('code')" href="#">More</a>
+    </div>
+    <script type="text/javascript">getContent('code')</script>
+    <script type="text/javascript">drawFooter()</script>
+  </body>
 </html>

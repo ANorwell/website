@@ -101,6 +101,11 @@ body > .wrapper {
     background-color:#6C96F1;
 }
 
+.allposts {
+    text-align:right;
+    padding-right:20px;
+}
+
 h1 {
     font-family:sans-serif;
     font-weight:bold;

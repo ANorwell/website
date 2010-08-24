@@ -1,21 +1,19 @@
-//The playlist of songs
-var myPlayList = [
-{name:"The Sound of Silence", mp3:"http://anorwell.com/src/music/2010/soundofsilence.mp3"},
-{name:"One Great City", mp3:"http://anorwell.com/src/music/2010/onegreatcity-2.mp3"},
-{name:"Desire's Only Fling", mp3:"http://anorwell.com/src/music/2010/desiresonlyfling-2.mp3"},
-{name:"The Cave", mp3:"http://anorwell.com/src/music/2010/thecave.mp3"},
-{name:"The Mind - Arron Norwell", mp3:"http://anorwell.com/src/music/2010/themind.mp3"},
-{name:"Hallelujah", mp3:"http://anorwell.com/src/music/2010/hallelujah-better.mp3"},
+var gSongUrlPrefix = "http://anorwell.com/src/music/";
 
-];
+//The playlist of songs
+var gPlaylist;
 
 //hack to get playlistChange function outside of ready
 var  playListChangeCallback;
 var  playItem = 0;
 
-$(document).ready(function(){
+
+//this player code is adapted from http://www.happyworm.com/jquery/jplayer/latest/demo-02-oggSupportFalse.htm
+$(document).ready(function() {
+    gPlaylist = getPlaylist();    
     var autoplay = parseURL();
-	// Local copy of jQuery selectors, for performance.
+
+    // Local copy of jQuery selectors
 	var jpPlayTime = $("#jplayer_play_time");
 	var jpTotalTime = $("#jplayer_total_time");
 	var jpStatus = $("#demo_status"); // For displaying information about jPlayer's status in the demo page
@@ -51,9 +49,9 @@ $(document).ready(function(){
  
 	function displayPlayList() {
 		$("#jplayer_playlist ul").empty();
-		for (i=0; i < myPlayList.length; i++) {
-			var listItem = (i == myPlayList.length-1) ? "<li class='jplayer_playlist_item_last'>" : "<li>";
-			listItem += "<a href='#' id='jplayer_playlist_item_"+i+"' tabindex='1'>"+ myPlayList[i].name +"</a></li>";
+		for (i=0; i < gPlaylist.length; i++) {
+			var listItem = (i == gPlaylist.length-1) ? "<li class='jplayer_playlist_item_last'>" : "<li>";
+			listItem += "<a href='#' id='jplayer_playlist_item_"+i+"' tabindex='1'>"+ gPlaylist[i].name +"</a></li>";
 			$("#jplayer_playlist ul").append(listItem);
 			$("#jplayer_playlist_item_"+i).data( "index", i ).click( function() {
 				var index = $(this).data("index");
@@ -80,7 +78,7 @@ $(document).ready(function(){
 		$("#jplayer_playlist_item_"+playItem).removeClass("jplayer_playlist_current").parent().removeClass("jplayer_playlist_current");
 		$("#jplayer_playlist_item_"+index).addClass("jplayer_playlist_current").parent().addClass("jplayer_playlist_current");
 		playItem = index;
-		$("#jquery_jplayer").jPlayer("setFile", myPlayList[playItem].mp3);
+		$("#jquery_jplayer").jPlayer("setFile", gPlaylist[playItem].mp3);
 	}
  
 	function playListChange( index ) {
@@ -91,39 +89,46 @@ $(document).ready(function(){
     playListChangeCallback = playListChange;
  
 	function playListNext() {
-		var index = (playItem+1 < myPlayList.length) ? playItem+1 : 0;
+		var index = (playItem+1 < gPlaylist.length) ? playItem+1 : 0;
 		playListChange( index );
 	}
  
 	function playListPrev() {
-		var index = (playItem-1 >= 0) ? playItem-1 : myPlayList.length-1;
+		var index = (playItem-1 >= 0) ? playItem-1 : gPlaylist.length-1;
 		playListChange( index );
 	}
 
-
     });
 
-function parseURL() {
-    //parse the url for song= param, and start that song
-    var params = {};
-    var url = parent.document.URL;
+function getPlaylist() {
+    var req = new XMLHttpRequest();
+    var playlist;
+    req.onreadystatechange = function() {
+        if ( (req.readyState == 4) && (req.status == 200) ) { //completed OK
+            playlist = JSON.parse(req.responseText);
 
-    if (url.match(/\?/)) {
-        var pairs = url.replace(/#.*$/, '').replace(/^.*\?/, '').split(/[&;]/);
-        for (var p in pairs) {
-            var keyPair = pairs[p].split(/=/);
-            params[keyPair[0]] = keyPair[1];
-        }
-
-        //process song param
-        if (params['song'] ) {
-            var re = new RegExp(params['song'].replace(/%20/g, ''));
-            for (var song in myPlayList) {
-                if ( myPlayList[song].name.replace(/\s+/g, '').match(re) ) {
-                    playItem = song;
-                    return true;
-                }
+            for(var song in playlist) {
+                playlist[song].mp3 = gSongUrlPrefix + playlist[song].filename;
             }
         }
     }
+    
+    req.open("GET", "content.py?type=music", false);
+    req.send("");
+    return playlist;
+}
+    
+function parseURL() {
+    params = getParams(); //shared.js
+    //process song param
+    if (params['song'] ) {
+        var re = new RegExp(params['song'].replace(/%20/g, ''));
+        for (var song in gPlaylist) {
+            if ( gPlaylist[song].name.replace(/\s+/g, '').match(re) ) {
+                playItem = parseInt(song);
+                return true;
+            }
+        }
+    }
+    return false;
 }

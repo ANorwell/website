@@ -4,7 +4,7 @@
   <head>
     <title>Arron Norwell</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
-    <script src="http://www.google.com/jsapi?key=ABQIAAAAvBr3E5gjsEcbIKWhctpmAxQgVv7vPtNB8raRdaojY-Zd910d9BQG8OuNvGEwAlL4IOoefK_6q9is3A" type="text/javascript"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
     <script src="js/shared.js" type="text/javascript"></script>
   </head>
   <body>
@@ -16,36 +16,9 @@
     
     <!-- content -->
     <div id="content">
-
-    <div class="main" id="update">
-      <h1 class="title">
-        More music and Graphs
-      </h1>
-      <h3 class="date">
-        June 13, 2010
-      </h3>
-
-      <ul>
-        <li>Added a <a href="graph.html">graph drawing tool</a></li>
-        <li>Added a <a href="listen.html">few more songs and a fancier player</a></li>
-      </ul>
     </div>
-
-    <div class="main" id="music">
-      <h1 class="title">Music</h1>
-      <p>
-        Added some <a href="listen.html">music</a> I recorded. For the most part, the quality isn't very good, becuase it's recorded using a webcam. The older stuff is recorded with a better setup, but it's from a while ago.  Hopefully I can update this with more stuff as time goes on.
-      </p>
-    </div>
-
-
-    
-    <div class="main" id="first_news">
-      <h1 class="title">Hello World </h1>
-      <p>
-        Made a site.  This is mostly to mess around with HTML5 canvas, but who knows what else could go here.
-      </p>
-    </div>
+    <div class="allposts">
+      <a onclick="getContent()" href="#">More</a>
     </div>
     <script type="text/javascript">getContent()</script>
     <script type="text/javascript">drawFooter()</script>
