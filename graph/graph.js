@@ -25,6 +25,10 @@ function setup( canvas) {
     controller = new Controller(V,G);
     V.setController(controller);
 
+    var physics = new Physics(G);
+    physics.setPhysicsMode("float");
+
+    
     var step = function() { V.draw()  }
     setInterval(step, 50)
 }
@@ -76,8 +80,7 @@ function Controller(view, graph) {
             var mouseX = evt.pageX- canvas.offsetLeft;
             var mouseY = evt.pageY - canvas.offsetTop;
 
-            v.x = mouseX;
-            v.y = mouseY;
+            this.graph.moveVertex(v, mouseX, mouseY);
         }
     }
 
@@ -191,29 +194,75 @@ function Edge(v1, v2) {
 function Graph() {
     this.vertices = new Array();
     this.edges = new Array();
+}
 
-    //Add a vertex
-    this.addVertex = function(x,y) {
+//Add a vertex
+Graph.prototype.addVertex = function(x,y) {
+    var v = new Vertex(x,y);
+    this.vertices.push(v);
+}
+    
+//Add an edge
+Graph.prototype.addEdge = function(v1,v2) {
+    var e = new Edge(v1,v2);
+    this.edges.push(e);
+}
 
-        var v = new Vertex(x,y);
-        this.vertices.push(v);
-    }
-
-    //Add an edge
-    this.addEdge = function(v1,v2) {
-        var e = new Edge(v1,v2);
-        this.edges.push(e);
-    }
-
-    //Get vertex near a point
-    this.getVertexNear = function(x,y, dist) {
-        for (var i=0; i<this.vertices.length; i++) {
-
-            var v = this.vertices[i];
-            if ( (v.x - x) < dist && (x - v.x) < dist && (v.y - y) < dist && (y - v.y) < dist ) {
-                return i;
-            }
+//Get vertex near a point
+Graph.prototype.getVertexNear = function(x,y, dist) {
+    for (var i=0; i<this.vertices.length; i++) {
+        
+        var v = this.vertices[i];
+        if ( (v.x - x) < dist && (x - v.x) < dist && (v.y - y) < dist && (y - v.y) < dist ) {
+            return i;
         }
-        return null;
+    }
+    return null;
+}
+
+            
+//Move a vertex
+Graph.prototype.moveVertex = function(vertex, x, y) {
+    vertex.x = x;
+    vertex.y = y;
+}
+
+
+function Physics(graph) {
+    this.graph = graph;
+}
+
+Physics.prototype.defaultMove = function(vertex, x, y) {
+    vertex.x = x;
+    vertex.y = y;
+}
+
+Physics.prototype.floatMove = function(vertex, x, y) {
+    var dx = x - vertex.x;
+    var dy = y - vertex.y;
+    
+    //move this vertex
+    vertex.x += dx;
+    vertex.y += dy;
+    
+    //move other vertices
+    for (var i in this.vertices) {
+        var v = this.vertices[i];
+        if (v != vertex) {
+            v.x = v.x + dx/2;
+            v.y = v.y + dy/2;
+        }
+    }
+    
+    console.log("dx is", dx, "dy is: ", dy);
+}
+
+Physics.prototype.setPhysicsMode = function(mode) {
+    if (mode == "default") {
+        this.graph.moveVertex = this.defaultMove;
+    } else if (mode == "float") {
+        this.graph.moveVertex = this.floatMove;
+    } else {
+        console.log("Unknown physics mode:", mode);
     }
 }
