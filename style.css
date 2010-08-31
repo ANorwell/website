@@ -53,17 +53,16 @@ body > .wrapper {
 
 }
 
-.headerbox {
-/*    border-width:5px;
-    box-shadow: 10px 10px 20px #000000;
-    -moz-box-shadow: 10px 10px 20px #000000;
-    -webkit-box-shadow: 10px 10px 20px #000000;
-    background-color: #C6C6F8;
-/*    background: -webkit-gradient(linear, left bottom, right top, 
-                             from(#C6C6F8), to(white) );
-    background: -moz-linear-gradient(left,#C6C6F8,white);
-*/
+/* page spacing like main*/
+.comments {
+    margin:10px;
+    margin-left: 300px;
+    padding:10px;
+    padding-left:10px;
+    padding-right:20px;
+    padding-bottom:20px;
 }
+
 
 .leftContainer {
     width:210px;

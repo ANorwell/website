@@ -4,12 +4,13 @@
 gCanvasHeight = 150;
 gCanvasWidth = 150;
 
+//How far the server is in minutes from UTC.
+//TODO: breaks for savings time? 
 gServerUTCDifference = 240;
 
 //Multiple calls to getContent will increment gFirstPost, so that
 //each call will get the next (older) batch of posts.
 gFirstPost = 0;
-
 
 function drawMenu() {
     document.write( '  <div class="menu" id="menu">  ');
@@ -56,7 +57,6 @@ function canvasSize() {
     document.getElementById('canvasSize').innerHTML = (c.width == 150) ? '+' : '-';
 
 }
-    
 
 function postContent() {
     var form = document.createElement("form");
@@ -73,15 +73,20 @@ function getContent(tag, max) {
         if ( (req.readyState == 4) && (req.status == 200) ) { //completed OK
             var data = JSON.parse(req.responseText);
 
-            for(var post in data) {
-                var postHtml;
-                var curPost = data[post];
-
-                if (curPost.title) { //it is a post and not a comment
-                    postHtml = getPostHtml( curPost.title, curPost.date, curPost.type,
-                                            curPost.content);
-                    $("#content").append(postHtml);    
+            if ( data.length ) {
+            
+                for(var post in data) {
+                    var postHtml;
+                    var curPost = data[post];
+                    
+                    if (curPost.title) { //it is a post
+                        postHtml = getPostHtml( curPost.title, curPost.date, curPost.type,
+                                                curPost.content, curPost.id);
+                        $("#content").append(postHtml);    
+                    }
                 }
+            } else { //no new posts
+                $('#allposts').html("No More Posts");
             }
         }
     }
@@ -131,16 +136,58 @@ function toUserDate(isoDate) {
     return 0;
 }   
 
-function getPostHtml(title, date, type, content) {
+function getPostHtml(title, date, type, content, id) {
 
     date = toUserDate(date);
     return "<div class=\"main\">\n" +
         "<div class=\"titleblock\">" +
-        "<h1 class=\"title\">" + title + "</h1>\n" +
-        "<h3 class=\"date\">" + date + "<br/>" + type + "</h3>\n" +
+        "<h1 class=\"title\">" +
+        "<a href=\"index.html?id="+
+        id +
+        "\">" +
+        title +
+        "</a>" +
+        "</h1>\n" +
+        "<h3 class=\"date\">" +
+        date +
+        "<br/>" +
+        type +
+        "</h3>\n" +
         "</div>\n" +
         content +
         "</div>\n";
+}
+
+//display either comments or link to get more posts,
+// depending on context
+function emitEndOfPage() {
+    var id = getParams()["id"];
+    if (id) {
+        emitComments(id);
+    } else {
+        emitMoreLink();
+    }
+}
+
+function emitMoreLink() {
+    $('body').append('<div id="allposts" class="allposts"></div>')
+        $('#allposts').append('<a href="javascript:getContent()">More</a>');
+}
+
+//emits html to display facebook comments
+//http://developers.facebook.com/docs/reference/fbml/comments_%28XFBML%29
+function emitComments(id) {
+    
+    if (id) {
+        $('body').append(
+            '<div class="comments">' +
+            ' <fb:comments xid=' + id + '></fb:comments>' +
+            '</div>'
+                         );
+
+        //initialize the FB api using the api key
+        FB.init("13b8ea6ba64ec33d0c1c9c6f0b4712af", "/xd_receiver.htm");
+    }
 }
 
 //given a post id, filters just the associated comments
@@ -157,7 +204,6 @@ function getCommentsForId(data, id) {
 
 //helper to get param pairs from query string
 function getParams() {
-    //parse the url for song= param, and start that song
     var params = {};
     var url = parent.document.URL;
 

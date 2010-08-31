@@ -22,9 +22,9 @@ $(document).ready(function() {
 		ready: function() {
 			displayPlayList();
 			playListInit(autoplay); // Parameter is a boolean for autoplay.
-		},
+            },
         errorAlerts: true,
-	})
+                })
 	.jPlayer("onProgressChange", function(loadPercent, playedPercentRelative, playedPercentAbsolute, playedTime, totalTime) {
 		jpPlayTime.text($.jPlayer.convertTime(playedTime));
 		jpTotalTime.text($.jPlayer.convertTime(totalTime));
@@ -103,18 +103,14 @@ $(document).ready(function() {
 function getPlaylist() {
     var req = new XMLHttpRequest();
     var playlist;
-    req.onreadystatechange = function() {
-        if ( (req.readyState == 4) && (req.status == 200) ) { //completed OK
-            playlist = JSON.parse(req.responseText);
-
-            for(var song in playlist) {
-                playlist[song].mp3 = gSongUrlPrefix + playlist[song].filename;
-            }
-        }
-    }
-    
     req.open("GET", "content.py?type=music", false);
     req.send("");
+
+    playlist = JSON.parse(req.responseText);
+    for(var song in playlist) {
+        playlist[song].mp3 = gSongUrlPrefix + playlist[song].filename;
+    }
+
     return playlist;
 }
     
