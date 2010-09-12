@@ -263,7 +263,10 @@ View.prototype.init = function() {
     $("button", ".footer").button();
     $("#drawtype").buttonset();
     $("#usedialog").dialog({
-        hide: "puff"
+        hide: "puff",
+                close: function() {
+                $("#graph").unbind('click');
+            }
                 });
     $("#graph").click(function() {
             $("#usedialog").dialog("close");
