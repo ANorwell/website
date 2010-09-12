@@ -1,8 +1,12 @@
-
 console.log = function() {};
 
 //The controller, initialized by setup();
 var controller;
+
+//The parent of the canvas elt, used for finding
+//the canvas size
+var parent;
+
 
 //resize function
 var onresizeOld = window.onresize;
@@ -13,12 +17,6 @@ window.onresize = function() {
     controller.onResize(parent);
 };
 
-
-
-///////////
-// Classes
-///////////
-
 //given a canvas, sets up the MVC
 function setup( canvas ) {
     parent = canvas.parentNode;
@@ -26,18 +24,26 @@ function setup( canvas ) {
     V = new View(G, canvas);
     controller = new Controller(V,G);
     V.setController(controller);
-
+    V.init();
+    
+    //enable physics
     var physics = new Physics(G);
     physics.setPhysicsMode("float");
 
+    controller.load();
     
     var step = function() { V.draw()  }
-    setInterval(step, 50)
+    setInterval(step, 50);
 }
 
-/*
+///////////
+// Classes
+///////////
+
+
+/*************************************
  *   Controller
- */
+ *************************************/
 
 function Controller(view, graph) {
     this.view = view;
@@ -128,17 +134,50 @@ function Controller(view, graph) {
 
     //ONRESIZE
     this.onResize = function(parent) {
+
+        if (this.view.fullscreen) {
+            this.view.canvas.width = $(window).width();
+            this.view.canvas.height = $(window).height() - $("#footer").height();
+            console.log("Resizing to", this.view.canvas.width, this.view.canvas.height);
+        } else {
         this.view.canvas.width = parent.offsetWidth - 10; //TODO should be style.paddingLeft + style.paddingRight but this doesn't work ?
-    }
+        }
+    };
 
     //BUTTON CLICK
     this.buttonHandler = function(buttonType) {
         this.mode = buttonType;
         this.currVertex = null;
-    }
+    };
 
 }
 
+//for the save button (open dialog)
+Controller.prototype.saveButton = function() {
+    var name = this.view.saveDialog();
+};
+
+//for the save button (open dialog)
+Controller.prototype.loadButton = function() {
+    var name = this.view.loadDialog();
+};
+
+//actual save (on form submit)
+Controller.prototype.save = function(name) {
+    console.log("running save with name", name);
+    if (name) {
+        localStorage[name] = this.graph.toJSON();
+        console.log("saved graph", localStorage[name]);
+    }
+};
+
+Controller.prototype.load = function(name) {
+    console.log("load");
+    if (localStorage.getItem(name)) {
+        console.log("loading graph", localStorage[name]);
+        this.graph.fromJSON(localStorage.getItem(name));
+    }
+}  
 
 ///test crap
 Controller.prototype.itrCurrentVertex = function() {
@@ -146,22 +185,33 @@ Controller.prototype.itrCurrentVertex = function() {
     for (var v in this.graph) {
         console.log("Iterated over", v.toString());
     }
-}
+};
 
-/*
+Controller.prototype.testHasEdge = function() {
+    if (this.graph.hasEdge(this.graph.vertices[0], this.graph.vertices[1]) ) {
+        console.log("Has edge");
+    } else {
+        console.log("Has no edge");
+    }
+};
+    
+/***********************************
  *     View
- */
+ ***********************************/
 
 function View(graph, canvas) {
     this.graph = graph;
     this.canvas = canvas;
-    this.controller = null;;
+    this.controller = null;
 
+    this.fullscreen = true;
     this.vertexRadius = 5;
     this.border = 5;
 
+       
     this.setController = function(cont) {
         this.controller = cont;
+        console.log("Setting controller to", cont);
     }
 
     //Draw the graph
@@ -198,6 +248,89 @@ function View(graph, canvas) {
         }
     }
 }
+
+View.prototype.saveDialog = function() {
+    $("#savedialog").dialog('open');
+};
+
+View.prototype.loadDialog = function() {
+    $("#loaddialog").dialog('open');
+};
+
+//run js to init the view, which depends on the
+//html page (jqueryui)
+View.prototype.init = function() {
+    $("button", ".footer").button();
+    $("#drawtype").buttonset();
+    $("#usedialog").dialog({
+        hide: "puff"
+                });
+    $("#graph").click(function() {
+            $("#usedialog").dialog("close");
+            $("#graph").unbind('click');
+        }
+        );
+    
+    $("#savedialog").dialog({
+        autoOpen: false,
+                modal: true,
+                buttons: {
+                'Save': function() {
+                    var name = $("#savename").val();
+                    if (name) {
+                        controller.save(name);
+                    }
+                    $(this).dialog('close');
+                },
+                    'Cancel': function() {
+                        $(this).dialog('close');
+                    }
+            }
+        });
+
+    var allfields = new Array();
+    $("#loaddialog").dialog({
+        autoOpen: false,
+                modal: true,
+                width: 350,
+                open: function() {
+                $("#loadform").empty();
+                
+                if (localStorage) {
+                    for (var i=0; i<localStorage.length; i++) {
+                            var name = localStorage.key(i);
+                        console.log("load adding", name);
+                        $("#loadform").append(
+                            '<input type="radio" id="load' + name + '" value="' + name + '" /><label for="' + name + '">' + name +'</label><br/>' );
+                        allfields.push(name);
+                    }
+                }
+            },
+                
+                buttons: {
+                'Load': function() {
+                    //$("#loadform").submit();
+                    var name = $('input:checked', '#loadform').val();
+                        console.log("load called:", name);
+                        controller.load(name);
+                        $(this).dialog('close');
+                },
+                'Cancel': function() {
+                    $(this).dialog('close');
+                },
+                'Clear All': function() {
+                    localStorage.clear();
+                    $(this).dialog('close');
+                },
+                    
+
+            }
+        });
+}
+
+/**************************
+ *    Graph
+ ***************************/
 
 function Vertex(x,y) {
     this.x = x;
@@ -241,21 +374,16 @@ function Edge(v1, v2) {
     this.v2 = v2;
 }
 
-/*
- *    Graph
- */
 function Graph() {
     this.vertices = new Array();
     this.edges = new Array();
 }
 
-//Add a vertex
 Graph.prototype.addVertex = function(x,y) {
     var v = new Vertex(x,y);
     this.vertices.push(v);
 };
 
-//Add an edge
 Graph.prototype.addEdge = function(v1,v2) {
     var e = new Edge(v1,v2);
     this.edges.push(e);
@@ -263,10 +391,67 @@ Graph.prototype.addEdge = function(v1,v2) {
     v2.edges.push(e);
 };
 
+Graph.prototype.clear = function() {
+    this.vertices = new Array();
+    this.edges = new Array();
+};
+
+//Serialize to a simple vertex-list and edge-list,
+//which has no loops in it, and so can be json.
+Graph.prototype.toJSON = function() {
+
+    //create a image of the graph with no loops
+    //which we will JSON.stringify
+    var g = new Object();
+    g.vertices = new Array();
+    g.edges = new Array();
+
+    for (var i in this.vertices) {
+        var v = new Object();
+        v.x = this.vertices[i].x;
+        v.y = this.vertices[i].y;
+        g.vertices.push(v);
+    }
+
+    for (var i in this.edges) {
+        var edge = this.edges[i];
+        var newE = new Object();
+
+        for (var j in this.vertices) {
+            if (edge.v1 == this.vertices[j]) {
+                newE.v1 = j;
+            }
+            if (edge.v2 == this.vertices[j]) {
+                newE.v2 = j;
+            }
+        }
+
+        g.edges.push(newE);
+    }
+
+    return JSON.stringify(g);
+};
+
+//recover the full graph format from the vertex and
+//edge list
+Graph.prototype.fromJSON = function(json) {
+    var simpleG = JSON.parse(json);
+    this.clear();
+
+    for (var i in simpleG.vertices) {
+        this.addVertex(simpleG.vertices[i].x,
+                       simpleG.vertices[i].y);
+    }
+
+    for (var i in simpleG.edges) {
+        this.addEdge(this.vertices[simpleG.edges[i].v1],
+                     this.vertices[simpleG.edges[i].v2] );
+    }
+};
+
 //Get vertex near a point
 Graph.prototype.getVertexNear = function(x,y, dist) {
     for (var i=0; i<this.vertices.length; i++) {
-        
         var v = this.vertices[i];
         if ( (v.x - x) < dist && (x - v.x) < dist && (v.y - y) < dist && (y - v.y) < dist ) {
             return i;
@@ -275,8 +460,10 @@ Graph.prototype.getVertexNear = function(x,y, dist) {
     return null;
 };
 
+//returns true iff there is an edge between va and vb 
 Graph.prototype.hasEdge = function(va, vb) {
-    for (var e in va.edges) {
+    for (var i in va.edges) {
+        var e = va.edges[i];
         //since e is in va.edges, either v1 or v2 is va
         if (e.v1 == vb || e.v2 == vb) {
             return true;
@@ -285,6 +472,8 @@ Graph.prototype.hasEdge = function(va, vb) {
     return false;
 };
 
+//start a depth-first search at vertex v.
+//after calling this, the iterator should be used.
 Graph.prototype.startDepthFirst = function (v) {
     for (var i in this.vertices) {
         this.vertices[i].marked = false;
@@ -332,9 +521,9 @@ Graph.prototype.moveVertex = function(vertex, x, y) {
     vertex.y = y;
 };
 
-/*
+/*********************
  *    Physics
- */
+ *********************/
 function Physics(graph) {
     this.graph = graph;
 

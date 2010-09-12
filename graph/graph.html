@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Arron Norwell</title>
+  <link rel="stylesheet" type="text/css" href="graph.css"/>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+
+  <!-- jqueryui -->
+  		<link type="text/css" href="../jqueryui/css/ui-lightness/jquery-ui-1.8.4.custom.css" rel="stylesheet" />	
+		<script type="text/javascript" src="../jqueryui/js/jquery-1.4.2.min.js"></script>
+		<script type="text/javascript" src="../jqueryui/js/jquery-ui-1.8.4.custom.min.js"></script>
+  
+  <script type="text/javascript" src="graph.js"></script>
+</head>
+
+<body onload="setup(document.getElementById('graph')); controller.onResize(document.getElementById('canvasparent'))">
+
+  <!-- content -->
+  <div class="main" id="main">
+
+    <div id="canvasparent">
+    <canvas id="graph" width="500" height="500" onmousedown="controller.mouseDownHandler(event)" onmousemove="controller.mouseMoveHandler(event)" onmouseup="controller.mouseUpHandler(event)"></canvas>
+    <br/>
+    </div>
+
+
+    <div id="dialog" title="Graph Tool">
+      Click to draw Your graph.  Use the controls to change modes.  Save your graph, or load graphs you have previously saved.
+    </div>
+
+    <div id="footer" class="footer">
+
+      <h3>Draw Mode:</h3>
+      <div style="float:left; clear:both;" id="drawtype">
+	<input type="radio" id="vertices" name="drawtype" checked="yes" onclick="controller.buttonHandler('vertex')" title="Draw Graph Vertices, or drag vertices to move them"/><label for="vertices">Vertices</label>
+    <input type="radio" id="edges" name="drawtype" onclick="controller.buttonHandler('edge')" title="Select two vertices in succession to create an edge between them" /><label for="edges">Edges</label>
+      </div>
+      <button type="button" onclick="controller.itrCurrentVertex()"> ItrTest</button>
+
+      <button type="button" onclick="controller.save()">Save Current</button>
+
+    </div>
+  </div>
+</body>
+</html>
