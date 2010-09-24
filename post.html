@@ -5,7 +5,7 @@
   </head>
   <body>
     <h2>Submit Post</h2>
-    <form action="content.py" name="submit post" method="post">
+    <form id="post" action="content.py" name="submit post" method="post" onsubmit="return checkform('post')">
       Title: <input type="text" name="title"/><br/>
       Tags: <input type="text" name="type"/><br/>
       Content: <textarea rows="20" cols="100" name="content"></textarea><br/><br/>
@@ -14,14 +14,23 @@
     </form>
 
     <h2>Add Song</h2>
-    <form action="content.py" name="submit post" method="post"  enctype="multipart/form-data">
+    <form id="song" action="content.py" name="submit post" method="post"  enctype="multipart/form-data" onsubmit="return checkform('song')">
       Name: <input type="text" name="name"/><br/>
       File: <input type="file" name="songdata"/><br/>
       Password: <input type="password" name="password"></input><br/>
       <input type="submit" value="POST!"/>
     </form>
 
-    
+    <script type="text/javascript" src="js/sha256.js"></script>
+    <script type="text/javascript">
+      function checkform(formId) {
+      var form = document.getElementById(formId);
+      var pw = form.password.value;
+      var hash = (new jsSHA(pw, "ASCII")).getHash("SHA-224", "HEX");
+      form.password.value = hash;
+      alert(form.password.value);
+      return true;
+      }
+    </script>    
   </body>
 </html>
-      

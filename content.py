@@ -8,6 +8,7 @@ import os
 import re
 import sys
 import base64
+import hashlib
 
 """
 Handles POSTs in processPost, which submit either a post or a song (or TODO: comments),
@@ -17,15 +18,21 @@ or GETS in processGet, which request either posts or songs (or TODO: comments).
 #Database info
 gHost = "anorwell.powwebmysql.com"
 gUser = "darkchrono"
-gPassword = "select"
 gDB = "arron"
+gDbPw = base64.b64decode('c2VsZWN0')
+
 
 #names of db tables
 gPostTable = "post"
-gCommentTable = "comment"
 gSongTable = "music"
 
 gSongDirectory = 'src/music/'
+
+#this is sha224(sha224(pw)).
+#both client and server encrypt
+gPostPwSha = '36459f6c0c81826f7a828fcee17c247580fcab9afef89ee6972008f6'
+
+#'37407adc4230292f12303ce9ec0e4b029c3bb1f6ad323a6fe2d6388c'
 
 """Connect to the DB"""
 def connect():
@@ -33,7 +40,7 @@ def connect():
         conn = MySQLdb.connect (
             host = gHost,
             user = gUser,
-            passwd = gPassword,
+            passwd = gDbPw,
             db = gDB
         )
 
@@ -52,7 +59,8 @@ def processPost():
     form = cgi.FieldStorage();
 
     #TODO: plaintext vulnerable to snooping/man-in-the-middle
-    if ("password" not in form) or (form["password"].value != base64.b64decode('c2VsZWN0')):
+    if ("password" not in form) or ( hashlib.sha224(form["password"].value).hexdigest() != gPostPwSha):
+        
         print "Status: 400 BAD REQUEST"
         print "Content-Type: text/html\r\n"
         print "Invalid POST: password incorrect"

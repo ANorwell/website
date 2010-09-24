@@ -58,6 +58,9 @@ function canvasSize() {
 
 }
 
+
+//Post content to content.py.
+//Note that this can also be done in html, and this method is not currently used.
 function postContent() {
     var form = document.createElement("form");
     form.setAttribute("method", "POST");
@@ -216,4 +219,4 @@ function getParams() {
     }
     return params;
 }
-    
+
