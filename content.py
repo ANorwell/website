@@ -29,9 +29,8 @@ gSongTable = "music"
 gSongDirectory = 'src/music/'
 
 #this is sha224(sha224(pw)).
-#both client and server encrypt
+#both client and server encrypt, so that pw not vulnerable over the wire
 gPostPwSha = '36459f6c0c81826f7a828fcee17c247580fcab9afef89ee6972008f6'
-
 #'37407adc4230292f12303ce9ec0e4b029c3bb1f6ad323a6fe2d6388c'
 
 """Connect to the DB"""
@@ -58,7 +57,6 @@ title,type,content
 def processPost():
     form = cgi.FieldStorage();
 
-    #TODO: plaintext vulnerable to snooping/man-in-the-middle
     if ("password" not in form) or ( hashlib.sha224(form["password"].value).hexdigest() != gPostPwSha):
         
         print "Status: 400 BAD REQUEST"
@@ -160,6 +158,8 @@ def processGet():
     if query:
         pairs = re.split('\s*[&;]', query)
         args = dict(map( lambda x: re.split('\s*=\s*', x), pairs))
+    else:
+        args = dict()
 
 
     conn = connect()
@@ -191,10 +191,6 @@ def processGet():
         first = args["first"] if "first" in args else '0',
         max = args["maxposts"] if "maxposts" in args else '5'
         )
-
-    #Get the comments for that post
-    #TODO
-    #result.append ...
 
     print json.dumps(result);
 
