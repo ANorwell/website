@@ -12,17 +12,24 @@ type="text/javascript"></script>
     <script src="js/shared.js" type="text/javascript"></script>
   </head>
   <body>
-    <div class="leftContainer">
-      <script type="text/javascript">drawMenu()</script>
-    </div>
+
+    <div id="wrapper">
+      <div id="upperbarrier"></div>
+
+      <div class="leftContainer">
+        <script type="text/javascript">drawMenu()</script>
+      </div>
 
     <script type="text/javascript">drawHeader()</script>
     
     <!-- content -->
-    <div id="content">
-    </div>
+      <div id="content">
+      </div>
 
-    <script type="text/javascript">emitEndOfPage()</script>
+      <script type="text/javascript">emitEndOfPage()</script>
+
+    </div>
+    
     <script type="text/javascript">getContent()</script>
     <script type="text/javascript">drawFooter()</script>
   </body>
