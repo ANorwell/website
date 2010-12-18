@@ -240,7 +240,7 @@ function getParams() {
 //different embed target will get written before the next starts.
 var embedCounter = 0;
 var lastEmbedId;
-var embedDelay = 500; //ms
+var embedDelay = 1000; //ms
 function embed(jsPath, id) {
 
     if (lastEmbedId && (lastEmbedId != id )) {
