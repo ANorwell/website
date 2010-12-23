@@ -1,4 +1,8 @@
-console.log = function() {};
+var DEBUG = true;
+
+if (!DEBUG) {
+    console.log = function() {};
+}
 
 //The controller, initialized by setup();
 var controller;
@@ -6,7 +10,6 @@ var controller;
 //The parent of the canvas elt, used for finding
 //the canvas size
 var parent;
-
 
 //resize function
 var onresizeOld = window.onresize;
@@ -29,16 +32,17 @@ function setup( canvas ) {
     //enable physics
     var physics = new Physics(G);
     physics.setPhysicsMode("float");
-
+    G.setPhysics(physics);
+    
     controller.load();
     
     var step = function() { V.draw()  }
     setInterval(step, 50);
 }
 
-///////////
+//////////////////////
 // Classes
-///////////
+//////////////////////
 
 
 /*************************************
@@ -382,6 +386,10 @@ function Graph() {
     this.edges = new Array();
 }
 
+Graph.prototype.setPhysics = function(physics) {
+    this.physics = physics;
+};
+
 Graph.prototype.addVertex = function(x,y) {
     var v = new Vertex(x,y);
     this.vertices.push(v);
@@ -489,6 +497,7 @@ Graph.prototype.startDepthFirst = function (v) {
 };
 
 Graph.prototype.__iterator__ = function() {
+    console.log("Called graph iterator ctor");
     return new GraphIterator(this);
 };
 
@@ -499,6 +508,7 @@ function GraphIterator(graph) {
 }
 
 GraphIterator.prototype.next = function() {
+    console.log("called next");
     var currVertex = this.g.itrStack.pop();
     if (!currVertex) {
         throw StopIteration;
@@ -512,6 +522,15 @@ GraphIterator.prototype.next = function() {
     return currVertex;
 };
 
+//Callback used by the physics class to set the current mode.
+Graph.prototype.moveVertex = function(vertex, x, y) {
+    this.physics.moveVertex(vertex,x,y);
+    
+};
+
+/*********************
+ *    Physics
+ *********************/
 /*
   Function that defines what happens when a vertex is moved.
   This function is controlled by the Physics class, which modifies this callback
@@ -519,14 +538,7 @@ GraphIterator.prototype.next = function() {
   var p = new Physics(graph);
   p.setPhysicsMode("float");
  */    
-Graph.prototype.moveVertex = function(vertex, x, y) {
-    vertex.x = x;
-    vertex.y = y;
-};
 
-/*********************
- *    Physics
- *********************/
 function Physics(graph) {
     this.graph = graph;
 
@@ -536,6 +548,9 @@ function Physics(graph) {
         "float" : this.floatMove
     };
 }
+
+//this method is bound to one of the specific modes by setPhysicsMode
+Physics.prototype.moveVertex  = function(vertex,x,y) {};
 
 Physics.prototype.defaultMove = function(vertex, x, y) {
     vertex.x = x;
@@ -551,8 +566,8 @@ Physics.prototype.floatMove = function(vertex, x, y) {
     vertex.y += dy;
     
     //move other vertices in this component
-    this.startDepthFirst(vertex);
-    for (var v in this) {
+    this.graph.startDepthFirst(vertex);
+    for (var v in this.graph) {
         console.log(v.toString(), "connected to", vertex.toString());
         if (v != vertex) {
             v.x = v.x + dx/2;
@@ -567,10 +582,9 @@ Physics.prototype.setPhysicsMode = function(aMode) {
     var match = false;
     for (var mode in this.modes) {
         if (aMode == mode) {
-            this.graph.moveVertex = this.modes[mode];
+            this.moveVertex = this.modes[mode];
             match = true;
         }
-
     }
 
     if (!match) {
