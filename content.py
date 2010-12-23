@@ -25,13 +25,13 @@ gDbPw = base64.b64decode('c2VsZWN0')
 #names of db tables
 gPostTable = "post"
 gSongTable = "music"
+gGraphTable = "graph"
 
 gSongDirectory = 'src/music/'
 
 #this is sha224(sha224(pw)).
-#both client and server encrypt
+#both client and server encrypt, so that pw not vulnerable over the wire
 gPostPwSha = '36459f6c0c81826f7a828fcee17c247580fcab9afef89ee6972008f6'
-
 #'37407adc4230292f12303ce9ec0e4b029c3bb1f6ad323a6fe2d6388c'
 
 """Connect to the DB"""
@@ -50,6 +50,14 @@ def connect():
 
     return conn
 
+
+def checkPw(form):
+    if ("password" not in form) or ( hashlib.sha224(form["password"].value).hexdigest() != gPostPwSha):
+        return False;
+    return True;
+
+
+
 """
 Form requires fields password, and then either:
 songdata, name    OR
@@ -58,22 +66,30 @@ title,type,content
 def processPost():
     form = cgi.FieldStorage();
 
-    #TODO: plaintext vulnerable to snooping/man-in-the-middle
-    if ("password" not in form) or ( hashlib.sha224(form["password"].value).hexdigest() != gPostPwSha):
-        
-        print "Status: 400 BAD REQUEST"
-        print "Content-Type: text/html\r\n"
-        print "Invalid POST: password incorrect"
-        return;
 
-    #TODO: sanitize/process content?
+    #determine the type of the data in the post
+    validated = False
+    if "graph" not in form:
+        validated = checkPw(form)
+        if not validated:
+            print "Status: 400 BAD REQUEST"
+            print "Content-Type: text/html\r\n"
+            print "Invalid POST: password incorrect"
+            return
+
 
     print "Status: 200 OK"
     print "Content-Type: text/html\r\n"
 
-    if ("songdata" in form):  #it is music
 
-        addEntry(
+    if "graph" in form:
+        id = addEntry(
+            gGraphTable,
+            graph = form.getfirst("graph")
+            )
+        print str(id)
+    elif validated and "songdata" in form:
+        print addEntry(
             gSongTable,
             name = form.getfirst("name"),
             filename = form["songdata"].filename,
@@ -81,8 +97,9 @@ def processPost():
 
         uploadSong(form["songdata"].filename, form["songdata"])
         print "Added song " + form.getfirst("name")
-    else:
-        addEntry(
+
+    elif validated: #it is a content post
+        print addEntry(
             gPostTable,
             title = form.getfirst("title"),
             type = form.getfirst("type"),
@@ -90,6 +107,9 @@ def processPost():
         )
         print "Added post " + form.getfirst("title")
 
+
+#Given a table name and a dict of name=data,
+#inserts that data into the table
 def addEntry(table, **args):
     
     conn = connect()
@@ -120,8 +140,13 @@ def addEntry(table, **args):
           ]
         )
     """
-    print "Running: " + postQuery + " with vals:",args.values(), "<br/>\n"
     cursor.execute(postQuery, args.values() )
+
+    #Get and return the id of the inserted object
+    cursor.execute("SELECT LAST_INSERT_ID()")
+    val = cursor.fetchone()[0]
+    return val
+
 
 
 def uploadSong(name, filePost):
@@ -138,7 +163,7 @@ def uploadSong(name, filePost):
 
 """A GET request for information that returns JSON.
 The following params are supported:
-  type = music|post|comment (TODO:comment)
+  type = music|post|graph
   id = the id number of the post/song (ie, get only 1)
   tag = only valid for posts, describes a tag that the post is tagged with.
   
@@ -160,6 +185,8 @@ def processGet():
     if query:
         pairs = re.split('\s*[&;]', query)
         args = dict(map( lambda x: re.split('\s*=\s*', x), pairs))
+    else:
+        args = dict()
 
 
     conn = connect()
@@ -169,6 +196,9 @@ def processGet():
         tableName = gSongTable
         columns =  ['id','name','filename', 'date']
         args["maxposts"] = "100"
+    elif ("type" in args and args["type"] == "graph"):
+        tableName = gGraphTable
+        columns = ['id', 'graph', 'date']
     else:
         tableName = gPostTable
         columns =  ['id','title','content','date','type']
@@ -191,10 +221,6 @@ def processGet():
         first = args["first"] if "first" in args else '0',
         max = args["maxposts"] if "maxposts" in args else '5'
         )
-
-    #Get the comments for that post
-    #TODO
-    #result.append ...
 
     print json.dumps(result);
 

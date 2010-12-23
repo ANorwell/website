@@ -12,6 +12,9 @@ gServerUTCDifference = 240;
 //each call will get the next (older) batch of posts.
 gFirstPost = 0;
 
+//the id of the wrapper element that contains content.
+gWrapper = '#wrapper';
+
 function drawMenu() {
     document.write( '  <div class="menu" id="menu">  ');
     document.write( ' <a href = "index.html">');
@@ -32,13 +35,15 @@ function drawMenu() {
 }
 
 function drawHeader() {
-    document.write('<div class="headerbox" id="header" style="text-align:center"><h1 style="font-size:2em;font-family:Georgia,serif">Arron Norwell</h1></div>');
+    document.write('<div class="bigtitle" id="header">Arron Norwell</div>');
 }
 
 
-//no-op, for now.
+//Should get called after anything else that inserts
+//content into wrapper.
 function drawFooter() {
-    //document.write('<div class="footer">Content (C) <a href="mailto://anorwell@gmail.com">Arron Norwell.</a>.  This website is on <a href="http://github.com/ANorwell/website">github.</a></div>');
+    $(gWrapper).append('<div class="footerpad"></div>');
+    $('body').append('<div class="footer">Content (C) <a href="mailto:anorwell@gmail.com">Arron Norwell.</a>.  This website is on <a href="http://github.com/ANorwell/website">github.</a></div>');
 }
 
 //resizes the menu canvas when clicked.  not used anymore because its stupid
@@ -87,6 +92,7 @@ function getContent(tag, max) {
                                                 curPost.content, curPost.id);
                         $("#content").append(postHtml);    
                     }
+                    //if there are other types of content, they could go here.
                 }
             } else { //no new posts
                 $('#allposts').html("No More Posts");
@@ -173,7 +179,7 @@ function emitEndOfPage() {
 }
 
 function emitMoreLink() {
-    $('body').append('<div id="allposts" class="allposts"></div>')
+    $(gWrapper).append('<div id="allposts" class="allposts"></div>')
         $('#allposts').append('<a href="javascript:getContent()">More</a>');
 }
 
@@ -182,7 +188,7 @@ function emitMoreLink() {
 function emitComments(id) {
     
     if (id) {
-        $('body').append(
+        $(gWrapper).append(
             '<div class="comments">' +
             ' <fb:comments xid=' + id + '></fb:comments>' +
             '</div>'
@@ -220,3 +226,47 @@ function getParams() {
     return params;
 }
 
+
+
+
+//some (remote) scripts use document.write, which doesn't play
+//nice with ajax. embed overrides document.write and then
+//inserts the script tag, so that document.write appends to
+//the selected id instead of the end of the page.
+//Worse, multiple embeds targeting different ids won't work cleanly,
+//because the scripts are processed aysnc, which means
+//document.write could get overwritten.
+//The hack solution is to just sleep long enough that every
+//different embed target will get written before the next starts.
+var embedCounter = 0;
+var lastEmbedId;
+var embedDelay = 1000; //ms
+function embed(jsPath, id) {
+
+    if (lastEmbedId && (lastEmbedId != id )) {
+        embedCounter = embedCounter + 1;
+    }
+    lastEmbedId = id;
+    setTimeout(function(){embedCallback(jsPath,id)}, embedDelay*embedCounter);
+    
+}
+
+function embedCallback(jsPath,id) {
+    document.oldwrite = document.write;
+    document.write = function(string) {
+        $("#" + id).append(string);
+    }
+
+    //use non-jquery because jquery processes script tags...
+    var head = document.getElementsByTagName("head")[0];
+    var js = document.createElement('script');
+    js.type = 'text/javascript';
+    js.src = jsPath;
+    head.appendChild(js);
+
+    //we'd like to return document.write back to normal here
+    //but the script tag is evaluated async, and so the code in the
+    //script hasn't been called yet.
+    //Easiest solution: just leave it.  One shouldn't be using
+    //document.write anyways.
+}
