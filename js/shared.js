@@ -78,8 +78,8 @@ function getContent(tag, max) {
     max = max || 5;
     var req = new XMLHttpRequest();
     req.onreadystatechange = function() {
-        if ( (req.readyState == 4) && (req.status == 200) ) { //completed OK
-            var data = JSON.parse(req.responseText);
+        if ( (this.readyState == 4) && (this.status == 200) ) { //completed OK
+            var data = JSON.parse(this.responseText);
 
             if ( data.length ) {
             

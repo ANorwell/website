@@ -28,7 +28,6 @@
       var pw = form.password.value;
       var hash = (new jsSHA(pw, "ASCII")).getHash("SHA-224", "HEX");
       form.password.value = hash;
-      alert(form.password.value);
       return true;
       }
     </script>    

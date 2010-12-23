@@ -179,8 +179,8 @@ def processGet():
     query = os.environ["QUERY_STRING"]
     args = {}
 
-    print "Status: 200 OK"
     print "Content-Type: application/json\r\n"
+    print ""
 
     if query:
         pairs = re.split('\s*[&;]', query)
