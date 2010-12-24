@@ -226,47 +226,36 @@ function getParams() {
     return params;
 }
 
-
-
-
 //some (remote) scripts use document.write, which doesn't play
 //nice with ajax. embed overrides document.write and then
 //inserts the script tag, so that document.write appends to
 //the selected id instead of the end of the page.
-//Worse, multiple embeds targeting different ids won't work cleanly,
-//because the scripts are processed aysnc, which means
-//document.write could get overwritten.
-//The hack solution is to just sleep long enough that every
-//different embed target will get written before the next starts.
-var embedCounter = 0;
-var lastEmbedId;
-var embedDelay = 1000; //ms
+//To stop multiple calls to embed from colliding, the function
+//is locked while a <script> tag is being processed.
+var gEmbedLock = false;
+var gEmbedSleepDuration = 50;
+
 function embed(jsPath, id) {
+    if (gEmbedLock) {
+        setTimeout(function() {embed(jsPath,id)}, 50);
+    } else {
+        gEmbedLock = true;
 
-    if (lastEmbedId && (lastEmbedId != id )) {
-        embedCounter = embedCounter + 1;
+        document.oldwrite = document.write;
+        document.write = function(string) {
+            $("#" + id).append(string);
+        };
+
+        //use non-jquery because jquery processes script tags...
+        var head = document.getElementsByTagName("head")[0];
+        var js = document.createElement('script');
+        js.type = 'text/javascript';
+        js.src = jsPath;
+        js.onload = function() {
+            document.write = document.oldwrite;
+            gEmbedLock = false;
+        }
+                                 
+        head.appendChild(js);
     }
-    lastEmbedId = id;
-    setTimeout(function(){embedCallback(jsPath,id)}, embedDelay*embedCounter);
-    
-}
-
-function embedCallback(jsPath,id) {
-    document.oldwrite = document.write;
-    document.write = function(string) {
-        $("#" + id).append(string);
-    }
-
-    //use non-jquery because jquery processes script tags...
-    var head = document.getElementsByTagName("head")[0];
-    var js = document.createElement('script');
-    js.type = 'text/javascript';
-    js.src = jsPath;
-    head.appendChild(js);
-
-    //we'd like to return document.write back to normal here
-    //but the script tag is evaluated async, and so the code in the
-    //script hasn't been called yet.
-    //Easiest solution: just leave it.  One shouldn't be using
-    //document.write anyways.
 }
