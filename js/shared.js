@@ -133,9 +133,9 @@ function toUserDate(isoDate) {
 
     if (d) {
         var date = new Date(d[1], d[2] - 1, d[3], d[4], d[5]- tzOffset, d[6]);
-        var months = new Array("Jan", "Feb", "Mar", "Apr", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec");
+        var months = new Array("Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec");
 
-        return months[date.getMonth()-1] + " "
+        return months[date.getMonth()] + " "
             + date.getDate() + ", "
             + date.getFullYear() + " "
             + date.getHours() + ":"
