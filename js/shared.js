@@ -25,10 +25,9 @@ function drawMenu() {
 
     document.write( '      <br/> ' )
 
-        document.write( '      <a class="menutext" href="index.html">Read</a><br/> ');
-    document.write( '      <a class="menutext" href="listen.html">Listen</a><br/> ');
-    document.write( '      <a class="menutext" href="look.html">Look</a><br/> ');
-    document.write( '      <a class="menutext" href="code.html">Code</a><br/> ');
+        document.write( '      <a class="menutext" href="index.html">Blog</a><br/> ');
+    document.write( '      <a class="menutext" href="listen.html">Music</a><br/> ');
+    document.write( '      <a class="menutext" href="projects.html">Projects</a><br/> ');
     document.write( '      <a class="menutext" href="about.html">About</a><br/> ');
     document.write( '    <br/> ');
     document.write( '  </div> ');
