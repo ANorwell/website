@@ -169,7 +169,7 @@ function getPostHtml(title, date, type, content, id) {
 //display either comments or link to get more posts,
 // depending on context
 //optional tag provided.
-function emitEndOfPage(tag="") {
+function emitEndOfPage(tag) {
     var id = getParams()["id"];
     if (id) {
         emitComments(id);
@@ -178,9 +178,10 @@ function emitEndOfPage(tag="") {
     }
 }
 
-function emitMoreLink(tag="") {
+function emitMoreLink(aTag) {
+    var tag = aTag || "";
     $(gWrapper).append('<div id="allposts" class="allposts"></div>')
-        $('#allposts').append('<a href="javascript:getContent(' + tag + ')">More</a>');
+        $('#allposts').append('<a href="javascript:getContent(\'' + tag + '\')">More</a>');
 }
 
 //emits html to display facebook comments
