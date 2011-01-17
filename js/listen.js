@@ -10,8 +10,16 @@ var  playItem = 0;
 
 //this player code is adapted from http://www.happyworm.com/jquery/jplayer/latest/demo-02-oggSupportFalse.htm
 $(document).ready(function() {
-    gPlaylist = getPlaylist();    
-    var autoplay = parseURL();
+    var params = getParams();
+    if (params['song']) {
+        gPlaylist = getPlaylist(params['song']);
+
+        //hack--hide content if we're linking to a song
+        $('#content').hide();
+        $('#allposts').hide();
+    } else {
+        gPlaylist = getPlaylist();
+    }
 
     // Local copy of jQuery selectors
 	var jpPlayTime = $("#jplayer_play_time");
@@ -21,7 +29,7 @@ $(document).ready(function() {
 	$("#jquery_jplayer").jPlayer({
 		ready: function() {
 			displayPlayList();
-			playListInit(autoplay); // Parameter is a boolean for autoplay.
+			playListInit(false);
             },
         errorAlerts: true,
                 })
@@ -100,13 +108,21 @@ $(document).ready(function() {
 
     });
 
-function getPlaylist() {
+function getPlaylist(aSong) {
     var req = new XMLHttpRequest();
     var playlist;
     req.open("GET", "content.py?type=music", false);
     req.send("");
 
     playlist = JSON.parse(req.responseText);
+    if (aSong) {
+        var re = new RegExp(aSong.replace(/%20/g,''));
+        playlist = playlist.filter(function(val) {
+                if (val.name.replace(/\s+/g,'').match(re) ) {
+                    return true;
+                } else { return false }
+                    });
+    }
     for(var song in playlist) {
         playlist[song].mp3 = gSongUrlPrefix + playlist[song].filename;
     }

@@ -45,23 +45,6 @@ function drawFooter() {
     $('body').append('<div class="footer">Content (C) <a href="mailto:anorwell@gmail.com">Arron Norwell.</a>.  This website is on <a href="http://github.com/ANorwell/website">github.</a></div>');
 }
 
-//resizes the menu canvas when clicked.  not used anymore because its stupid
-function canvasSize() {
-    var c = document.getElementById('canvas');
-    
-    c.height = (c.height == 150) ? 500 : 150;
-    c.width = (c.width == 150) ? 500 : 150;
-    var newWidth = (c.width + 40) + 'px';
-    document.getElementById('menu').style.width = newWidth;
-
-    var mains = document.getElementsByClassName('main');
-    for (var i=0; i<mains.length; i++) {
-        mains[i].style.marginLeft = (c.width + 60) + 'px';
-    }
-    document.getElementById('canvasSize').innerHTML = (c.width == 150) ? '+' : '-';
-
-}
-
 
 //Post content to content.py.
 //Note that this can also be done in html, and this method is not currently used.
