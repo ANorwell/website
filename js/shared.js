@@ -15,6 +15,9 @@ gFirstPost = 0;
 //the id of the wrapper element that contains content.
 gWrapper = '#wrapper';
 
+//The suffix appended to the the page title when a single post is displayed.
+gTitleSuffix = " - Arron Norwell";
+
 function drawMenu() {
     document.write( '  <div class="menu" id="menu">  ');
     document.write( ' <a href = "index.html">');
@@ -56,31 +59,40 @@ function postContent() {
     form.submit();
 }
 
+//When the server returns content, updates the page to show the new content.
+//Should be the onreadystatechange of an XMLHttpRequest.
+function processContentCallback() {
+    if ( (this.readyState == 4) && (this.status == 200) ) { //completed OK
+        var data = JSON.parse(this.responseText);
+
+        if ( data.length ) {
+            
+            for(var post in data) {
+                var postHtml;
+                var curPost = data[post];
+                    
+                if (curPost.title) { //it is a post
+                    postHtml = getPostHtml( curPost.title, curPost.date, curPost.type,
+                                            curPost.content, curPost.id);
+                    $("#content").append(postHtml);    
+
+                    //if this is a single post, set the title.
+                    if (getParams()["id"]) {
+                        document.title = curPost.title + gTitleSuffix;
+                    }
+                }
+            }
+        } else { //no new posts
+            $('#allposts').html("No More Posts");
+        }
+    }
+}
+
+//Construct a XMLHttpRequest to get content from the server
 function getContent(tag, max) {
     max = max || 5;
     var req = new XMLHttpRequest();
-    req.onreadystatechange = function() {
-        if ( (this.readyState == 4) && (this.status == 200) ) { //completed OK
-            var data = JSON.parse(this.responseText);
-
-            if ( data.length ) {
-            
-                for(var post in data) {
-                    var postHtml;
-                    var curPost = data[post];
-                    
-                    if (curPost.title) { //it is a post
-                        postHtml = getPostHtml( curPost.title, curPost.date, curPost.type,
-                                                curPost.content, curPost.id);
-                        $("#content").append(postHtml);    
-                    }
-                    //if there are other types of content, they could go here.
-                }
-            } else { //no new posts
-                $('#allposts').html("No More Posts");
-            }
-        }
-    }
+    req.onreadystatechange = processContentCallback;
 
     var params = getParams();
     var queryString = "?";
@@ -182,18 +194,6 @@ function emitComments(id) {
         FB.init("13b8ea6ba64ec33d0c1c9c6f0b4712af", "/xd_receiver.htm");
     }
 }
-
-//given a post id, filters just the associated comments
-function getCommentsForId(data, id) {
-    var comments = [];
-    for(var post in data) {
-        if (data[post].post_id == id) {
-            comments.push(post);
-        }
-    }
-    return comments;
-}
-
 
 //helper to get param pairs from query string
 function getParams() {
