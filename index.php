@@ -1,9 +1,9 @@
 <?php
 
-$gServer = "anorwell.powwebmysql.com";
-$gUser = "darkchrono";
-$gDB = "arron";
-$gPw = base64_decode('c2VsZWN0');
+$gServer = "";
+$gUser = "";
+$gDB = "";
+$gPw = "";
 
 $gPageTitle = "Arron Norwell";
 $gKeywords = "arron,norwell,arron norwell";
