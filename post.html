@@ -2,16 +2,48 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title> Post </title>
+
+    <!-- Yahoo YUI2 text editor -->
+    <!-- Skin CSS file -->
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/assets/skins/sam/skin.css"></link>
+    <!-- Utility Dependencies -->
+    <script src="http://yui.yahooapis.com/2.8.2r1/build/yahoo-dom-event/yahoo-dom-event.js"></script> 
+    <script src="http://yui.yahooapis.com/2.8.2r1/build/element/element-min.js"></script> 
+    <!-- Needed for Menus, Buttons and Overlays used in the Toolbar -->
+    <script src="http://yui.yahooapis.com/2.8.2r1/build/container/container_core-min.js"></script>
+    <script src="http://yui.yahooapis.com/2.8.2r1/build/menu/menu-min.js"></script>
+    <script src="http://yui.yahooapis.com/2.8.2r1/build/button/button-min.js"></script>
+    <!-- Source file for Rich Text Editor-->
+    <script src="http://yui.yahooapis.com/2.8.2r1/build/editor/editor-min.js"></script>
+
+    <script type="text/javascript">
+      var myEditor = new YAHOO.widget.Editor('content', {
+      height: '300px',
+      width: '922px',
+      resize: true,
+      autoHeight: true,
+      dompath: true,     //Turns on the bar at the bottom
+      animate: true,     //Animates the opening, closing and moving of Editor windows
+      handleSubmit: true //let YUI handle html of the text-editor, since I'm lazy
+      });
+      myEditor.render();
+    </script>
+
   </head>
   <body>
     <h2>Submit Post</h2>
-    <form id="post" action="content.py" name="submit post" method="post" onsubmit="return checkform('post')">
+
+    <div class="yui-skin-sam">
+    
+      <form id="post" action="content.py" name="submit post" method="post" onsubmit="return checkform('post')">
       Title: <input type="text" name="title"/><br/>
       Tags: <input type="text" name="type"/><br/>
-      Content: <textarea rows="20" cols="100" name="content"></textarea><br/><br/>
+      Content: <textarea rows="20" cols="100" name="content" id="content"></textarea><br/><br/>
       Password: <input type="password" name="password"></input><br/>
       <input type="submit" value="POST!"/>
     </form>
+
+    </div>
 
     <h2>Add Song</h2>
     <form id="song" action="content.py" name="submit post" method="post"  enctype="multipart/form-data" onsubmit="return checkform('song')">
