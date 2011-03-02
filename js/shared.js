@@ -20,7 +20,7 @@ gTitleSuffix = " - Arron Norwell";
 
 function drawMenu() {
     document.write( '  <div class="menu" id="menu">  ');
-    document.write( ' <a href = "index.html">');
+    document.write( ' <a href = "/">');
     document.write( '      <canvas id="canvas" width="150" height="150" class="logo"></canvas>');
     document.write( '</a>');
     document.write('<script type="text/javascript" src="js/canvas.js"></script>'); 
@@ -145,7 +145,7 @@ function getPostHtml(title, date, type, content, id) {
     return "<div class=\"main\">\n" +
         "<div class=\"titleblock\">" +
         "<h1 class=\"title\">" +
-        "<a href=\"index.html?id="+
+        "<a href=\"/?id="+
         id +
         "\">" +
         title +
