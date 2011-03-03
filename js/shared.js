@@ -1,16 +1,16 @@
 
 //GLOBALS
 //set the default canvas size for the menu
-gCanvasHeight = 150;
-gCanvasWidth = 150;
+var gCanvasHeight = 150;
+var gCanvasWidth = 150;
 
 //How far the server is in minutes from UTC.
 //TODO: breaks for savings time? 
-gServerUTCDifference = 240;
+var gServerUTCDifference = 240;
 
 //Multiple calls to getContent will increment gFirstPost, so that
 //each call will get the next (older) batch of posts.
-gFirstPost = 0;
+var gFirstPost = 5;
 
 //the id of the wrapper element that contains content.
 gWrapper = '#wrapper';
