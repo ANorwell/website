@@ -28,7 +28,7 @@ function drawMenu() {
 
     document.write( '      <br/> ' )
 
-        document.write( '      <a class="menutext" href="index.html">Blog</a><br/> ');
+        document.write( '      <a class="menutext" href="/">Blog</a><br/> ');
     document.write( '      <a class="menutext" href="listen.html">Music</a><br/> ');
     document.write( '      <a class="menutext" href="projects.html">Projects</a><br/> ');
     document.write( '      <a class="menutext" href="about.html">About</a><br/> ');
