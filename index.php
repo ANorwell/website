@@ -102,7 +102,10 @@ type="text/javascript"></script>
         } while($row = mysql_fetch_assoc($post))
         ?>
         </div>
-         <script type="text/javascript">emitEndOfPage()</script>
+         <script type="text/javascript">
+              gFirstPost = 5;
+              emitEndOfPage()
+              </script>
     </div>
               
     <script type="text/javascript">drawFooter()</script>

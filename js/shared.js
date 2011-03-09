@@ -10,7 +10,7 @@ var gServerUTCDifference = 240;
 
 //Multiple calls to getContent will increment gFirstPost, so that
 //each call will get the next (older) batch of posts.
-var gFirstPost = 5;
+var gFirstPost = 0;
 
 //the id of the wrapper element that contains content.
 gWrapper = '#wrapper';
