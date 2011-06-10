@@ -184,14 +184,26 @@ function emitMoreLink(aTag) {
 function emitComments(id) {
     
     if (id) {
-        $(gWrapper).append(
-            '<div class="comments">' +
-            ' <fb:comments xid=' + id + '></fb:comments>' +
-            '</div>'
-                         );
-
         //initialize the FB api using the api key
-        FB.init("13b8ea6ba64ec33d0c1c9c6f0b4712af", "/xd_receiver.htm");
+        FB.init({
+            appID: "142482435788660",
+            status: true,
+            cookie: true,
+            xfbml: true
+        });
+
+        var href = 'http://anorwell.com/?id=' + id;
+        
+
+        $(gWrapper).append('<div id="fb-root"></div>');
+        $(gWrapper).append('<div class="comments">' + 
+
+            '<fb:like href="' + href +
+                '" send="true" width="500" show_faces="true" font="arial"></fb:like>' +
+
+                ' <fb:comments href="' + href +
+                '" num_posts="5" width="500"></fb:comments>' +
+                           '</div>');
     }
 }
 
@@ -221,7 +233,7 @@ var gEmbedSleepDuration = 50;
 
 function embed(jsPath, id) {
     if (gEmbedLock) {
-        setTimeout(function() {embed(jsPath,id)}, 50);
+        setTimeout(function() {embed(jsPath,id)}, gEmbedSleepDuration);
     } else {
         gEmbedLock = true;
 

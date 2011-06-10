@@ -3,7 +3,7 @@
 $gServer = "";
 $gUser = "";
 $gDB = "";
-$gPw = "";
+$gPw = "");
 
 $gPageTitle = "Arron Norwell";
 $gKeywords = "arron,norwell,arron norwell";
@@ -47,11 +47,12 @@ if ($_GET["id"]) {
 <meta name="description" content="Arron sometimes works a software developer, but currently going to school at the University of Toronto for a masters degree in Computer science.  He has formerly lived and worked in the SF-bay area, California, and went to school at the University of British Columbia in Vancouver.  He grew up in British Columbia."></meta>
    <?php } ?>
 <meta name="keywords" content="<?php echo $gKeywords ?>"></meta>
+<meta property="fb:admins" content="632644359"/> 
+<meta property="fb:app_id" content="142482435788660">
     
     <link rel="stylesheet" type="text/css" href="style.css" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-    <script src=
-"http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php" 
+    <script src="http://connect.facebook.net/en_US/all.js"
 type="text/javascript"></script>
     <script src="js/shared.js" type="text/javascript"></script>
   </head>
@@ -91,9 +92,9 @@ type="text/javascript"></script>
           <h1 class="title"><a href="index.php?id=<?php echo $id ?>"><?php echo $title ?></a></h1>
           <h3 class="date" id="date<?php echo $id ?>">
              <script type="text/javascript">
-                document.write(toUserDate("<?php echo $date ?>"))
+               $("#date<?php echo $id ?>").html(toUserDate("<?php echo $date ?>") + "<br/><?php echo $type ?>");
              </script>
-           <br/> <?php echo $type ?></h3>
+           </h3>
        </div>
         <?php echo $content ?>
      </div>
