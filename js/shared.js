@@ -26,9 +26,9 @@ function drawMenu() {
     document.write('<script type="text/javascript" src="js/canvas.js"></script>'); 
     //document.write( '      <a id="canvasSize" onClick="canvasSize()">+</a>' );
 
-    document.write( '      <br/> ' )
+    document.write( '      <br/> ' );
 
-        document.write( '      <a class="menutext" href="/">Blog</a><br/> ');
+    document.write( '      <a class="menutext" href="/">Blog</a><br/> ');
     document.write( '      <a class="menutext" href="listen.html">Music</a><br/> ');
     document.write( '      <a class="menutext" href="projects.html">Projects</a><br/> ');
     document.write( '      <a class="menutext" href="about.html">About</a><br/> ');
@@ -193,16 +193,12 @@ function emitComments(id) {
         });
 
         var href = 'http://anorwell.com/?id=' + id;
-        
-
         $(gWrapper).append('<div id="fb-root"></div>');
         $(gWrapper).append('<div class="comments">' + 
-
-            '<fb:like href="' + href +
-                '" send="true" width="500" show_faces="true" font="arial"></fb:like>' +
-
-                ' <fb:comments href="' + href +
-                '" num_posts="5" width="500"></fb:comments>' +
+                           '<fb:like href="' + href +
+                           '" send="true" width="500" show_faces="true" font="arial"></fb:like>' +
+                           ' <fb:comments href="' + href +
+                           '" num_posts="5" width="500"></fb:comments>' +
                            '</div>');
     }
 }
