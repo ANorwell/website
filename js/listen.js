@@ -108,6 +108,8 @@ $(document).ready(function() {
 
     });
 
+//Populates the playlist. If no arguments, with all songs. If aSong, then
+//with any songs whose names include aSong (case insensitive)
 function getPlaylist(aSong) {
     var req = new XMLHttpRequest();
     var playlist;
@@ -116,7 +118,7 @@ function getPlaylist(aSong) {
 
     playlist = JSON.parse(req.responseText);
     if (aSong) {
-        var re = new RegExp(aSong.replace(/%20/g,''));
+        var re = new RegExp(aSong.replace(/%20/g,''), 'i');
         playlist = playlist.filter(function(val) {
                 if (val.name.replace(/\s+/g,'').match(re) ) {
                     return true;
@@ -128,19 +130,4 @@ function getPlaylist(aSong) {
     }
 
     return playlist;
-}
-    
-function parseURL() {
-    params = getParams(); //shared.js
-    //process song param
-    if (params['song'] ) {
-        var re = new RegExp(params['song'].replace(/%20/g, ''));
-        for (var song in gPlaylist) {
-            if ( gPlaylist[song].name.replace(/\s+/g, '').match(re) ) {
-                playItem = parseInt(song);
-                return true;
-            }
-        }
-    }
-    return false;
 }
