@@ -14,9 +14,13 @@ $(document).ready(function() {
     if (params['song']) {
         gPlaylist = getPlaylist(params['song']);
 
-        //hack--hide content if we're linking to a song
+        //hack--hide content and set title if we're linking to a song
         $('#content').hide();
         $('#allposts').hide();
+        if (gPlaylist[0].name) {
+            document.title = gPlaylist[0].name + gTitleSuffix; //gTitleSuffix from shared.js
+        }
+        
     } else {
         gPlaylist = getPlaylist();
     }
