@@ -1,12 +1,20 @@
 <?php
 
-$gServer = "";
-$gUser = "";
-$gDB = "";
-$gPw = "");
-
+$gServer = "anorwell.powwebmysql.com";
+$gUser = "darkchrono";
+$gDB = "arron";
+$gPw = base64_decode('c2VsZWN0');
 $gPageTitle = "Arron Norwell";
 $gKeywords = "arron,norwell,arron norwell";
+
+//the meta info for the post
+$gMeta = array(
+               keywords => "arron,norwell,arron norwell",
+               "fb:admins" => "632644359",
+               "fb:app_id" => "142482435788660",
+               "og:type" => "anorwell:post",
+               "og:image" => "http://anorwell.com/icon.gif"
+               );
 
 $link = mysql_connect($gServer, $gUser, $gPw);
 
@@ -34,59 +42,59 @@ if (!$post) {
 $row = mysql_fetch_assoc($post);
 if ($_GET["id"]) {
     $gPageTitle = "$row[title] - Arron Norwell";
-    $gKeywords = $gKeywords . "," . $row["type"];
- }    
+    $gMeta["keywords"] .= "," . $row["type"];
+    $gMeta["og:url"] = "http://anorwell.com/?id=" . $_GET['id'];
+    $gMeta["og:title"] = $gPageTitle;
+}    
                       
 ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:fb="http://www.facebook.com/2008/fbml">
-  <head>
+  <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# anorwell: http://ogp.me/ns/fb/anorwell#">
     <title><?php echo $gPageTitle ?></title>
-    <?php if (! $_GET['id']) { ?>
-    <meta name="description" content="Arron sometimes works a software developer, but currently going to school at the University of Toronto for a masters degree in Computer science.  He has formerly lived and worked in the SF-bay area, California, and went to school at the University of British Columbia in Vancouver.  He grew up in British Columbia."></meta>
-    <?php } ?>
-    <meta name="keywords" content="<?php echo $gKeywords ?>"></meta>
-    <meta property="fb:admins" content="632644359"/> 
-    <meta property="fb:app_id" content="142482435788660">
-      
-      <link rel="stylesheet" type="text/css" href="style.css" />
-      <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
-      <script src="http://connect.facebook.net/en_US/all.js"
-              type="text/javascript"></script>
-      <script src="js/shared.js" type="text/javascript"></script>
-    </head>
+    <?php if ($_GET['id']) {
+    foreach($gMeta as $key=>$val) { ?>
+    <meta property="<?php echo $key ?>" content="<?php echo $val?>"></meta>
+
+    <?php }
+      } else {  ?>
+        <meta name="description" content="Arron sometimes works a software developer, but currently going to school at the University of Toronto for a masters degree in Computer science.  He has formerly lived and worked in the SF-bay area, California, and went to school at the University of British Columbia in Vancouver.  He grew up in British Columbia."></meta>
+
+   <?php } //close if ?>
+
+  
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <script src="js/shared.js" type="text/javascript"></script>
+  </head>
     
-    <body>
+  <body>
 
-      <div id="wrapper">
-        <div id="upperbarrier"></div>
+    <div id="wrapper">
+      <div id="upperbarrier"></div>
 
-        <div class="leftContainer">
-          <script type="text/javascript">drawMenu()</script>
-        </div>
+      <div class="leftContainer">
+        <script type="text/javascript">drawMenu()</script>
+      </div>
 
-        <script type="text/javascript">drawHeader()</script>
+      <script type="text/javascript">drawHeader()</script>
         
-        <!-- content -->
-        <div id="content">
-          <?php
-            do {
+      <!-- content -->
+      <div id="content">
+        <?php
+          do {
 
-                if ($_GET["id"]) {
-                    $gPageTitle = "$row[title] - Arron Norwell";
-                }
+              $title = $row["title"];
+              $id = $row["id"];
 
-                $title = $row["title"];
-                $id = $row["id"];
+              $content = $row["content"];
+              $type= $row["type"];
 
-                $content = $row["content"];
-                $type= $row["type"];
-
-                //There is a js function toUserDate in shared.js that maps iso8601 -> user's timezone.
-                //We're lazy, so we want to use this, so get an iso date.
-                $date = date(DateTime::ISO8601, strtotime($row["date"] ));
-          ?>
+              //There is a js function toUserDate in shared.js that maps iso8601 -> user's timezone.
+              //We're lazy, so we want to use this, so get an iso date.
+              $date = date(DateTime::ISO8601, strtotime($row["date"] ));
+        ?>
           <div class="main">
             <div class="titleblock">
               <h1 class="title"><a href="index.php?id=<?php echo $id ?>"><?php echo $title ?></a></h1>
@@ -103,12 +111,48 @@ if ($_GET["id"]) {
             } while($row = mysql_fetch_assoc($post))
         ?>
       </div>
-      <script type="text/javascript">
-        gFirstPost = 5;
-        emitEndOfPage()
-      </script>
-    </div>
-    
+
+
+      <?php if ($_GET['id']) {
+        $url = 'http://anorwell.com/?id=' . $_GET['id'];
+        ?>
+      <div id="fb-root"></div>
+
+      <!-- Currently using FB.init doesn't work with timeline.
+      If they fix this, this script could change back to a FB.init-->
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=142482435788660&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+      <div class="comments">
+        <div class="commentsinner">
+          <fb:add-to-timeline show-faces="true" mode="button"></fb:add-to-timeline>
+          <div id="fbReadPost" style="margin:0.2em">
+            <a href='javascript:fbReadPost(<?php echo $_GET['id'] ?>)'>Show you read this post on Facebook!</a>
+          </div>
+          <fb:like href='<?php echo $url ?>'
+          send="true" width="500" show_faces="true" font="arial"></fb:like>
+          <fb:comments href='<?php echo $url?>'
+          num_posts="5" width="500"></fb:comments>
+        </div>
+      </div>
+
+
+      <?php } else { ?>
+      
+      <script>gFirstPost = 5;</script>
+      <div id="allposts" class="allposts">
+        <a href="javascript:getContent('')">More</a>
+      </div>
+
+
+    <?php } ?>
+
+  </div> <!-- close wrapper -->
     <script type="text/javascript">drawFooter()</script>
   </body>
 </html>

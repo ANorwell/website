@@ -76,7 +76,7 @@ function processContentCallback() {
                                             curPost.content, curPost.id);
                     $("#content").append(postHtml);    
 
-                    //if this is a single post, set the title.
+                    //if this is a single post, set the title
                     if (getParams()["id"]) {
                         document.title = curPost.title + gTitleSuffix;
                     }
@@ -161,7 +161,7 @@ function getPostHtml(title, date, type, content, id) {
         "</div>\n";
 }
 
-//display either comments or link to get more posts,
+//display either comments or link to get more postsa,
 // depending on context
 //optional tag provided.
 function emitEndOfPage(tag) {
@@ -184,23 +184,38 @@ function emitMoreLink(aTag) {
 function emitComments(id) {
     
     if (id) {
+
+        var href = 'http://anorwell.com/?id=' + id;
+        $(gWrapper).append('<div id="fb-root"></div>');
+
+        $(gWrapper).append('<div class="comments">' +
+                           '<div class="commentsinner">' +
+                           '<fb:add-to-timeline></fb:add-to-timeline>' +
+                           '<fb:like href="' + href +
+                           '" send="true" width="500" show_faces="true" font="arial"></fb:like>' +
+                           ' <fb:comments href="' + href +
+                           '" num_posts="5" width="500"></fb:comments>' +
+                           '</div></div>');
+
         //initialize the FB api using the api key
         FB.init({
             appID: "142482435788660",
             status: true,
             cookie: true,
-            xfbml: true
+            xfbml: true,
+            channelURL : 'http://anorwell.com/channel.html',
+            oauth: true
         });
 
-        var href = 'http://anorwell.com/?id=' + id;
-        $(gWrapper).append('<div id="fb-root"></div>');
-        $(gWrapper).append('<div class="comments">' + 
-                           '<fb:like href="' + href +
-                           '" send="true" width="500" show_faces="true" font="arial"></fb:like>' +
-                           ' <fb:comments href="' + href +
-                           '" num_posts="5" width="500"></fb:comments>' +
-                           '</div>');
+        
     }
+}
+
+function fbReadPost(id) {
+    FB.api('/me/anorwell:read' +
+           '&post=http://anorwell.com/' + escape('?id=') + id, 'post',
+           function (resp) {});
+    $("#fbReadPost").html("Thanks!")
 }
 
 //helper to get param pairs from query string
