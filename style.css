@@ -4,7 +4,7 @@ html,body {
             height: 100%;   
             background-color:#CFE2F8;
             font: normal normal normal 19px/25px "TeX Gyre Schola","Georgia","Bitstream Charter","Century Schoolbook L","Liberation Serif","Times",serif;
-
+            color: #444;
             }
 
 /* The "content-box", which pushes the footer down */
