@@ -1,4 +1,8 @@
 #!/usr/bin/python
+"""
+Handles POSTs in processPost, which submit either a post or a song (or TODO: comments),
+or GETS in processGet, which request either posts or songs (or TODO: comments).
+"""
 
 import MySQLdb
 import cgi
@@ -10,38 +14,33 @@ import sys
 import base64
 import hashlib
 
-"""
-Handles POSTs in processPost, which submit either a post or a song (or TODO: comments),
-or GETS in processGet, which request either posts or songs (or TODO: comments).
-"""
-
-#Database info
-gHost = "anorwell.powwebmysql.com"
-gUser = "darkchrono"
-gDB = "arron"
-gDbPw = base64.b64decode('c2VsZWN0')
+gConfigFileLocation = "config.txt"
 
 
-#names of db tables
-gPostTable = "post"
-gSongTable = "music"
-gGraphTable = "graph"
+def getConfig(file):
+    f = open(file)
+    lines = filter(
+        lambda x: not re.match("(^$)|#|\s",x),
+        re.split('\n', f.read()))
+    for l in lines:
+        sys.stderr.write(l + "\n")
+    
+    config = dict( map( lambda x: re.split('\s*=\s*',x), lines))
 
-gSongDirectory = 'src/music/'
+    sys.stderr.write("Config:")
+    for k,v in config.iteritems():
+        sys.stderr.write("k: "+ k + " v: " + v),
+    return config
 
-#this is sha224(sha224(pw)).
-#both client and server encrypt, so that pw not vulnerable over the wire
-gPostPwSha = '36459f6c0c81826f7a828fcee17c247580fcab9afef89ee6972008f6'
-#'37407adc4230292f12303ce9ec0e4b029c3bb1f6ad323a6fe2d6388c'
 
 """Connect to the DB"""
 def connect():
     try:
         conn = MySQLdb.connect (
-            host = gHost,
-            user = gUser,
-            passwd = gDbPw,
-            db = gDB
+            host = gConfig['host'],
+            user = gConfig['user'],
+            passwd = gConfig['dbPw'],
+            db = gConfig["db"]
         )
 
     except MySQLdb.Error, e:
@@ -52,7 +51,7 @@ def connect():
 
 
 def checkPw(form):
-    if ("password" not in form) or ( hashlib.sha224(form["password"].value).hexdigest() != gPostPwSha):
+    if ("password" not in form) or ( hashlib.sha224(form["password"].value).hexdigest() != gConfig["postPwSha"]):
         return False;
     return True;
 
@@ -84,13 +83,13 @@ def processPost():
 
     if "graph" in form:
         id = addEntry(
-            gGraphTable,
+            gConfig['graphTable'],
             graph = form.getfirst("graph")
             )
         print str(id)
     elif validated and "songdata" in form:
         print addEntry(
-            gSongTable,
+            gConfig['songTable'],
             name = form.getfirst("name"),
             filename = form["songdata"].filename,
         )
@@ -100,7 +99,7 @@ def processPost():
 
     elif validated: #it is a content post
         print addEntry(
-            gPostTable,
+            gConfig['postTable'],
             title = form.getfirst("title"),
             type = form.getfirst("type"),
             content = form.getfirst("content")
@@ -150,7 +149,7 @@ def addEntry(table, **args):
 
 
 def uploadSong(name, filePost):
-    filepath = gSongDirectory + name
+    filepath = gConfig['songDirectory'] + name
     print "Trying to create", filepath, "<br>\n"
     if os.path.isfile(filepath):
         print "File", filepath, "already exists\n"
@@ -193,14 +192,14 @@ def processGet():
     cursor = conn.cursor()
 
     if ("type" in args and args["type"] == "music"):
-        tableName = gSongTable
+        tableName = gConfig['songTable']
         columns =  ['id','name','filename', 'date']
         args["maxposts"] = "100"
     elif ("type" in args and args["type"] == "graph"):
-        tableName = gGraphTable
+        tableName = gConfig['graphTable']
         columns = ['id', 'graph', 'date']
     else:
-        tableName = gPostTable
+        tableName = gConfig['postTable']
         columns =  ['id','title','content','date','type']
     
 
@@ -256,6 +255,9 @@ def getSingleTableData(rownames, **args):
     return map(processRow, cursor.fetchall() )
 
 
+##Handle a request##
+
+gConfig = getConfig(gConfigFileLocation)
 
 if (os.environ["REQUEST_METHOD"] == 'POST'):
     sys.stderr.write("handling a POST request at" + datetime.datetime.now().ctime() + "\n")

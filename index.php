@@ -1,13 +1,20 @@
 <?php
 
-$gServer = "anorwell.powwebmysql.com";
-$gUser = "darkchrono";
-$gDB = "arron";
-$gPw = base64_decode('c2VsZWN0');
+#Sensitive information stored in a config file
+$gConfigFileLocation = "config.txt";
+
+$fh = file($gConfigFileLocation,FILE_IGNORE_NEW_LINES);
+foreach ($fh as $line) {
+  if (preg_match("/^#|^\s*$/", $line) == 0) {
+    list ($k,$v) = preg_split("/\s*=\s*/", $line);
+    $gConfig[$k] = $v;
+  }
+}
+
+
+//the meta info for the page and post
 $gPageTitle = "Arron Norwell";
 $gKeywords = "arron,norwell,arron norwell";
-
-//the meta info for the post
 $gMeta = array(
                keywords => "arron,norwell,arron norwell",
                "fb:admins" => "632644359",
@@ -16,13 +23,13 @@ $gMeta = array(
                "og:image" => "http://anorwell.com/icon.gif"
                );
 
-$link = mysql_connect($gServer, $gUser, $gPw);
+$link = mysql_connect($gConfig['host'], $gConfig['user'], $gConfig['dbPw']);
 
 if (!$link) {
     die('Could not connect: ' . mysql_error());
  }
 
-mysql_select_db($gDB);
+mysql_select_db($gConfig['db']);
 
 function getPost($filter) {
     return mysql_query("SELECT id,title,content,date,type FROM post WHERE $filter ORDER BY id DESC LIMIT 0 , 5");
