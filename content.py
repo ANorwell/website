@@ -14,8 +14,7 @@ import sys
 import base64
 import hashlib
 
-gConfigFileLocation = "config.txt"
-
+gConfigFileLocation = "/www/config.txt"
 
 def getConfig(file):
     f = open(file)
@@ -34,13 +33,13 @@ def getConfig(file):
 
 
 """Connect to the DB"""
-def connect():
+def connect(config):
     try:
         conn = MySQLdb.connect (
-            host = gConfig['host'],
-            user = gConfig['user'],
-            passwd = gConfig['dbPw'],
-            db = gConfig["db"]
+            host = config['host'],
+            user = config['user'],
+            passwd = config['dbPw'],
+            db = config["db"]
         )
 
     except MySQLdb.Error, e:
@@ -50,8 +49,12 @@ def connect():
     return conn
 
 
-def checkPw(form):
-    if ("password" not in form) or ( hashlib.sha224(form["password"].value).hexdigest() != gConfig["postPwSha"]):
+def checkPw(form, expected_pw):
+    sys.stderr.write("form pw is: " + form['password'].value)
+    sha = hashlib.sha224(form["password"].value).hexdigest()
+    sys.stderr.write( "shas to " + sha)
+    sys.stderr.write(" and expected is " + expected_pw)
+    if ("password" not in form) or ( hashlib.sha224(form["password"].value).hexdigest() != expected_pw):
         return False;
     return True;
 
@@ -62,57 +65,69 @@ Form requires fields password, and then either:
 songdata, name    OR
 title,type,content
 """
-def processPost():
-    form = cgi.FieldStorage();
+def processPost(environ, start_response, config):
+    form = cgi.FieldStorage(environ['wsgi.input'],
+                            environ=environ);
 
+    sys.stderr.write("Form has keys: ")
+    for key in form:
+        sys.stderr.write(key + ",")
+
+    
+    sys.stderr.write("songdata is type " + type(form['songdata']).__name__)
+    sys.stderr.write("\nsongdata is dir ")
+    for entry in dir(form['songdata']):
+        sys.stderr.write(entry + ",")
+    sys.stderr.write("\nfilename is" + form['songdata'].filename);
+    
+    status = '200 OK'
+    response_headers = [('Content-Type','text/html')]
 
     #determine the type of the data in the post
     validated = False
     if "graph" not in form:
-        validated = checkPw(form)
+        validated = checkPw(form, config['postPwSha'])
         if not validated:
-            print "Status: 400 BAD REQUEST"
-            print "Content-Type: text/html\r\n"
-            print "Invalid POST: password incorrect"
-            return
+            status = '400 BAD REQUEST'
+            start_response(status, response_headers)
+            return ["Invalid POST: password incorrect"]
 
-
-    print "Status: 200 OK"
-    print "Content-Type: text/html\r\n"
-
+    conn = connect(config)
+    cursor = conn.cursor()
 
     if "graph" in form:
-        id = addEntry(
-            gConfig['graphTable'],
+        id = addEntry( cursor,
+            config['graphTable'],
             graph = form.getfirst("graph")
             )
-        print str(id)
+        content = str(id)
     elif validated and "songdata" in form:
-        print addEntry(
-            gConfig['songTable'],
+        print addEntry(cursor,
+            config['songTable'],
             name = form.getfirst("name"),
-            filename = form["songdata"].filename,
+            filename = form["songdata"].filename
         )
-
-        uploadSong(form["songdata"].filename, form["songdata"])
-        print "Added song " + form.getfirst("name")
+        filepath = config['songDirectory'] + form["songdata"].filename
+        uploadSong(filepath, form["songdata"])
+        content =  "Added song " + form.getfirst("name")
 
     elif validated: #it is a content post
-        print addEntry(
-            gConfig['postTable'],
+        print addEntry(cursor,
+            config['postTable'],
             title = form.getfirst("title"),
             type = form.getfirst("type"),
             content = form.getfirst("content")
         )
-        print "Added post " + form.getfirst("title")
+        content =  "Added post " + form.getfirst("title")
+
+    start_response(status, response_headers)
+    return [content]
 
 
 #Given a table name and a dict of name=data,
 #inserts that data into the table
-def addEntry(table, **args):
+def addEntry(cursor, table, **args):
     
-    conn = connect()
-    cursor = conn.cursor()
 
     nameString = '(date,' + ','.join(args.iterkeys()) + ')';
 
@@ -148,8 +163,7 @@ def addEntry(table, **args):
 
 
 
-def uploadSong(name, filePost):
-    filepath = gConfig['songDirectory'] + name
+def uploadSong(filepath, filePost):
     print "Trying to create", filepath, "<br>\n"
     if os.path.isfile(filepath):
         print "File", filepath, "already exists\n"
@@ -174,12 +188,11 @@ Will return JSON list of :
 ]
 
 """    
-def processGet():
-    query = os.environ["QUERY_STRING"]
+def processGet(environ, start_response, config):
+    query = environ["QUERY_STRING"]
     args = {}
 
-    print "Content-Type: application/json\r\n"
-    print ""
+    response_headers = [('Content-Type:', 'application/json\r\n')]
 
     if query:
         pairs = re.split('\s*[&;]', query)
@@ -188,18 +201,18 @@ def processGet():
         args = dict()
 
 
-    conn = connect()
+    conn = connect(config)
     cursor = conn.cursor()
 
     if ("type" in args and args["type"] == "music"):
-        tableName = gConfig['songTable']
+        tableName = config['songTable']
         columns =  ['id','name','filename', 'date']
         args["maxposts"] = "100"
     elif ("type" in args and args["type"] == "graph"):
-        tableName = gConfig['graphTable']
+        tableName = config['graphTable']
         columns = ['id', 'graph', 'date']
     else:
-        tableName = gConfig['postTable']
+        tableName = config['postTable']
         columns =  ['id','title','content','date','type']
     
 
@@ -221,7 +234,9 @@ def processGet():
         max = args["maxposts"] if "maxposts" in args else '5'
         )
 
-    print json.dumps(result);
+    #return the response
+    start_response('200 OK', response_headers);
+    return [json.dumps(result)];
 
 """
 Perform a single query with a WHERE and an order
@@ -257,11 +272,13 @@ def getSingleTableData(rownames, **args):
 
 ##Handle a request##
 
-gConfig = getConfig(gConfigFileLocation)
+def application(environ, start_response):
+    config = getConfig(gConfigFileLocation)
 
-if (os.environ["REQUEST_METHOD"] == 'POST'):
-    sys.stderr.write("handling a POST request at" + datetime.datetime.now().ctime() + "\n")
-    processPost()
-else:
-    sys.stderr.write("handling a GET request at" + datetime.datetime.now().ctime() + "\n")
-    processGet()
+
+    if (environ["REQUEST_METHOD"] == 'POST'):
+        sys.stderr.write("handling a POST request at" + datetime.datetime.now().ctime() + "\n")
+        return processPost(environ, start_response, config)
+    else:
+        sys.stderr.write("handling a GET request at" + datetime.datetime.now().ctime() + "\n")
+        return processGet(environ, start_response, config)
