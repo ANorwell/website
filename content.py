@@ -68,17 +68,6 @@ title,type,content
 def processPost(environ, start_response, config):
     form = cgi.FieldStorage(environ['wsgi.input'],
                             environ=environ);
-
-    sys.stderr.write("Form has keys: ")
-    for key in form:
-        sys.stderr.write(key + ",")
-
-    
-    sys.stderr.write("songdata is type " + type(form['songdata']).__name__)
-    sys.stderr.write("\nsongdata is dir ")
-    for entry in dir(form['songdata']):
-        sys.stderr.write(entry + ",")
-    sys.stderr.write("\nfilename is" + form['songdata'].filename);
     
     status = '200 OK'
     response_headers = [('Content-Type','text/html')]
