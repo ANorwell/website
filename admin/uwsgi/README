@@ -1,0 +1,1 @@
+This ini file should go in the /etc/uwsgi/apps-enabled/ folder to be started with the /etc/init.d/uwsgi daemon

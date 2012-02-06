@@ -1,0 +1,1 @@
+The nginx.conf is the default conf file, and other files should go in /etc/nginx/sites-enabled. Start nginx with /etc/init.d/nginx start

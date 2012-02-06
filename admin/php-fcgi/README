@@ -1,0 +1,1 @@
+php5-fpm should be started with /etc/init.d/php5-fpm start. By default, it will listen on port 9000, so nginx should proxy php requests to this port.
