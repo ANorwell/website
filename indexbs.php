@@ -36,11 +36,11 @@ function getPost($filter) {
 
 if ($_GET["id"]) {
     $post = getPost("id = $_GET[id]");
-} elseif ($_GET["tag"] )
-    $post = getPost("tag = $_GET[tag]");
+} elseif ($_GET["tag"] ) {
+  $post = getPost("tag = $_GET[tag]");
 } else {
-    $post = getPost(1);
- }
+  $post = getPost(1);
+}
 
 if (!$post) {
     die('Invalid query: ' . mysql_error());
