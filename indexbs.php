@@ -90,6 +90,8 @@ error_log($gQuery);
 <html lang="en"> 
   <head> 
     <meta charset="utf-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+
     <title><?php echo $gPageTitle ?></title>
     <?php if (array_key_exists("id", $_GET)) {
     foreach($gMeta as $key=>$val) { ?>
