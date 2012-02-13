@@ -10,51 +10,80 @@ foreach ($fh as $line) {
   }
 }
 
+//the position of the first post to show, initially 0
+$gFirst = 0;
 
 //the meta info for the page and post
 $gPageTitle = "Arron Norwell";
 $gKeywords = "arron,norwell,arron norwell";
 $gMeta = array(
-               keywords => "arron,norwell,arron norwell",
+               "keywords" => "arron,norwell,arron norwell",
                "fb:admins" => "632644359",
                "fb:app_id" => "142482435788660",
                "og:type" => "anorwell:post",
                "og:image" => "http://anorwell.com/icon.gif"
                );
 
-$link = mysql_connect($gConfig['host'], $gConfig['user'], $gConfig['dbPw']);
 
-if (!$link) {
-    die('Could not connect: ' . mysql_error());
- }
-
-mysql_select_db($gConfig['db']);
-
-function getPost($filter) {
-    return mysql_query("SELECT id,title,content,date,type FROM post WHERE $filter ORDER BY id DESC LIMIT 0 , 5");
+function getPost($filter, $first, $to_show) {
+  //avoid sql injection
+  if ( ($filter == 1) or
+       preg_match("/id=\d+/", $filter) or
+       preg_match("/type LIKE '%\w+%'/", $filter) ) {
+    if (preg_match("/\d/", $first)) {
+      return mysql_query("SELECT id,title,content,date,type FROM post WHERE $filter ORDER BY id DESC LIMIT $first, $to_show");
+    }
+  }
 }
 
-if ($_GET["id"]) {
-    $post = getPost("id = $_GET[id]");
-} elseif ($_GET["tag"] ) {
-  $post = getPost("tag = $_GET[tag]");
-} else {
-  $post = getPost(1);
-}
+function selectPosts() {
+  global $gConfig, $gFirst, $gPost;
+  $query = 1;
+  if (array_key_exists("id", $_GET)) {
+    $query = "id=$_GET[id]";
+  } elseif (array_key_exists("type", $_GET) ) {
+    $query = "type LIKE '%$_GET[type]%'";
+  }
 
-if (!$post) {
+  if (array_key_exists("first", $_GET) ) {
+    $gFirst = $_GET["first"];
+  }
+
+  $to_show = $gConfig['postsPerPage'];
+  error_log("first is $gFirst and to_show is $to_show");
+  $gPost = getPost($query, $gFirst, $to_show);
+
+  if (!$gPost) {
     die('Invalid query: ' . mysql_error());
+  }
+
 }
+
+$link = mysql_connect($gConfig['host'], $gConfig['user'], $gConfig['dbPw']);
+if (!$link) {
+  die('Could not connect: ' . mysql_error());
+}
+mysql_select_db($gConfig['db']);
+selectPosts();
 
 //Process the first row, so we can use it in the head.
-$row = mysql_fetch_assoc($post);
-if ($_GET["id"]) {
-    $gPageTitle = "$row[title] - Arron Norwell";
-    $gMeta["keywords"] .= "," . $row["type"];
-    $gMeta["og:url"] = "http://anorwell.com/?id=" . $_GET['id'];
-    $gMeta["og:title"] = $gPageTitle;
-}    
-                      
+$gRow = mysql_fetch_assoc($gPost);
+if (array_key_exists("id", $_GET)) {
+  $gPageTitle = "$row[title] - Arron Norwell";
+  $gMeta["keywords"] .= "," . $row["type"];
+  $gMeta["og:url"] = "http://anorwell.com/?id=" . $_GET['id'];
+  $gMeta["og:title"] = $gPageTitle;
+}
+
+//get  query string for the "Prev" and "Next" links, omitting "first"
+$gQuery = "";
+foreach ($_GET as $key=>$val) {
+  if ($key != 'first') {
+    $gQuery .= "$key=$val";
+  }
+}
+error_log($gQuery);
+  
 ?>
 
 <!DOCTYPE html> 
@@ -62,7 +91,7 @@ if ($_GET["id"]) {
   <head> 
     <meta charset="utf-8"> 
     <title><?php echo $gPageTitle ?></title>
-    <?php if ($_GET['id']) {
+    <?php if (array_key_exists("id", $_GET)) {
     foreach($gMeta as $key=>$val) { ?>
     <meta property="<?php echo $key ?>" content="<?php echo $val?>"></meta>
 
@@ -76,12 +105,18 @@ if ($_GET["id"]) {
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]--> 
- 
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+    <script src="js/shared.js"></script>
     <link href="bootstrap/css/bootstrap.css" rel="stylesheet"> 
     <style> 
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
       }
+      .post > p {
+        font: normal normal normal 19px/25px "TeX Gyre Schola","Georgia","Bitstream Charter","Century Schoolbook L","Liberation Serif","Times",serif;
+        color: #444;
+      }
+
     </style> 
     <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet"> 
  
@@ -98,12 +133,13 @@ if ($_GET["id"]) {
             <span class="icon-bar"></span> 
             <span class="icon-bar"></span> 
           </a> 
-          <a class="brand" href="#">Arron Norwell</a> 
+          <a class="brand" href="indexbs.php">Arron Norwell</a> 
           <div class="nav-collapse"> 
             <ul class="nav"> 
-              <li class="active"><a href="/">Home</a></li> 
-              <li><a href="#about">About</a></li> 
-              <li><a href="#contact">Contact</a></li> 
+              <li><a href="indexbs.php">Home</a></li>
+              <li><a href="indexbs.php?type=project">Projects</a></li> 
+              <li><a href="listen.html">Music</a></li>
+              <li><a href="about.html">About</a></li> 
             </ul> 
           </div><!--/.nav-collapse --> 
         </div> 
@@ -115,18 +151,18 @@ if ($_GET["id"]) {
         <?php
           do {
 
-              $title = $row["title"];
-              $id = $row["id"];
-              $content = $row["content"];
-              $type= $row["type"];
+              $title = $gRow["title"];
+              $id = $gRow["id"];
+              $content = $gRow["content"];
+              $type= $gRow["type"];
 
               //There is a js function toUserDate in shared.js that maps iso8601 -> user's timezone.
               //We're lazy, so we want to use this, so get an iso date.
-              $date = date(DateTime::ISO8601, strtotime($row["date"] ));
+              $date = date(DateTime::ISO8601, strtotime($gRow["date"] ));
         ?>
         <div class="row">
-          <div class="span8 offset2">
-              <h1 class="title"><a href="index.php?id=<?php echo $id ?>"><?php echo $title ?></a></h1>
+          <div class="span8 offset2 post">
+              <h1 class="title"><a href="indexbs.php?id=<?php echo $id ?>"><?php echo $title ?></a></h1>
               <h6 class="date" id="date<?php echo $id ?>">
               <script type="text/javascript">
                 $("#date<?php echo $id ?>").html(toUserDate("<?php echo $date ?>") + "<br/><?php echo $type ?>");
@@ -134,15 +170,27 @@ if ($_GET["id"]) {
             </h6>
             <?php echo $content ?>
           </div>
-        </div>
+        </div> <!-- end row -->
+        
         <?php
               //end do-while loop
-            } while($row = mysql_fetch_assoc($post))
+            } while($gRow = mysql_fetch_assoc($gPost))
         ?>
         </div> <!-- end #content -->
+
+            <?php if (!array_key_exists("id", $_GET)) { ?>
         <ul class="pager">
-          <li class="next"><a href="#">More</a></li>
+            <?php if ($gFirst > 0) { ?>
+            <li class="previous">
+              <a href="indexbs.php?<?php echo $gQuery . '&first='. ($gFirst-$gConfig['postsPerPage']) ?>">Newer</a>
+            </li>
+              <?php } ?>
+                 
+          <li class="next">
+            <a href="indexbs.php?<?php echo $gQuery . '&first='. ($gFirst+$gConfig['postsPerPage']) ?>">Older</a>
+          </li>
         </ul>
+           <?php } ?>
       
       <hr />
       <footer>
@@ -153,7 +201,7 @@ if ($_GET["id"]) {
     </div> <!-- /container -->
 
  
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+
     <script src="bootstrap/js/bootstrap-collapse.js"></script> 
 
  
