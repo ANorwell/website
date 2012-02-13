@@ -56,7 +56,6 @@ function selectPosts() {
   if (!$gPost) {
     die('Invalid query: ' . mysql_error());
   }
-
 }
 
 $link = mysql_connect($gConfig['host'], $gConfig['user'], $gConfig['dbPw']);
@@ -82,15 +81,14 @@ foreach ($_GET as $key=>$val) {
     $gQuery .= "$key=$val";
   }
 }
-error_log($gQuery);
   
 ?>
 
 <!DOCTYPE html> 
 <html lang="en"> 
   <head> 
-    <meta charset="utf-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta charset="utf-8"> </meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> </meta>
 
     <title><?php echo $gPageTitle ?></title>
     <?php if (array_key_exists("id", $_GET)) {
@@ -98,35 +96,49 @@ error_log($gQuery);
     <meta property="<?php echo $key ?>" content="<?php echo $val?>"></meta>
 
     <?php }
-      } else {  ?>
-        <meta name="description" content="Arron sometimes works a software developer, but currently going to school at the University of Toronto for a masters degree in Computer science.  He has formerly lived and worked in the SF-bay area, California, and went to school at the University of British Columbia in Vancouver.  He grew up in British Columbia."></meta>
+    } else {  ?>
+    <meta name="description" content="Arron sometimes works a software developer, but currently going to school at the University of Toronto for a masters degree in Computer science.  He has formerly lived and worked in the SF-bay area, California, and went to school at the University of British Columbia in Vancouver.  He grew up in British Columbia."></meta>
 
-   <?php } //close if ?>
+    <?php } //close if ?>
 
- 
+    
     <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]--> 
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]--> 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
     <script src="js/shared.js"></script>
-    <link href="bootstrap/css/bootstrap.css" rel="stylesheet"> 
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet"> </link>
     <style> 
       body {
-        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
       }
       .post > p {
-        font: normal normal normal 16px/21px "TeX Gyre Schola","Georgia","Bitstream Charter","Century Schoolbook L","Liberation Serif","Times",serif;
-        color: #444;
+      font: normal normal normal 16px/21px "TeX Gyre Schola","Georgia","Bitstream Charter","Century Schoolbook L","Liberation Serif","Times",serif;
+      color: #444;
       }
 
     </style> 
-    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet"> 
- 
-    <link rel="shortcut icon" href="favicon.ico"> 
+    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet"> </link>
+    
+    <link rel="shortcut icon" href="favicon.ico"> </link>
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-29014426-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+
   </head> 
- 
+  
   <body> 
- 
+    
     <div class="navbar navbar-fixed-top"> 
       <div class="navbar-inner"> 
         <div class="container"> 
@@ -153,61 +165,52 @@ error_log($gQuery);
         <?php
           do {
 
-              $title = $gRow["title"];
-              $id = $gRow["id"];
-              $content = $gRow["content"];
-              $type= $gRow["type"];
+            $title = $gRow["title"];
+            $id = $gRow["id"];
+            $content = $gRow["content"];
+            $type= $gRow["type"];
 
-              //There is a js function toUserDate in shared.js that maps iso8601 -> user's timezone.
-              //We're lazy, so we want to use this, so get an iso date.
-              $date = date(DateTime::ISO8601, strtotime($gRow["date"] ));
+            //There is a js function toUserDate in shared.js that maps iso8601 -> user's timezone.
+            //We're lazy, so we want to use this, so get an iso date.
+            $date = date(DateTime::ISO8601, strtotime($gRow["date"] ));
         ?>
         <div class="row">
           <div class="span8 offset2 post">
-              <h1 class="title"><a href="indexbs.php?id=<?php echo $id ?>"><?php echo $title ?></a></h1>
-              <h6 class="date" id="date<?php echo $id ?>">
-              <script type="text/javascript">
-                $("#date<?php echo $id ?>").html(toUserDate("<?php echo $date ?>") + "<br/><?php echo $type ?>");
-              </script>
-            </h6>
-            <?php echo $content ?>
-          </div>
-        </div> <!-- end row -->
-        
-        <?php
-              //end do-while loop
-            } while($gRow = mysql_fetch_assoc($gPost))
-        ?>
-        </div> <!-- end #content -->
-
-            <?php if (!array_key_exists("id", $_GET)) { ?>
-        <ul class="pager">
-            <?php if ($gFirst > 0) { ?>
-            <li class="previous">
-              <a href="indexbs.php?<?php echo $gQuery . '&first='. ($gFirst-$gConfig['postsPerPage']) ?>">Newer</a>
-            </li>
-              <?php } ?>
-                 
-          <li class="next">
-            <a href="indexbs.php?<?php echo $gQuery . '&first='. ($gFirst+$gConfig['postsPerPage']) ?>">Older</a>
-          </li>
-        </ul>
-           <?php } ?>
+            <h1 class="title"><a href="indexbs.php?id=<?php echo $id ?>"><?php echo $title ?></a></h1>
+            <h6 class="date" id="date<?php echo $id ?>">
+            <script type="text/javascript">
+              $("#date<?php echo $id ?>").html(toUserDate("<?php echo $date ?>") + "<br/><?php echo $type ?>");
+            </script>
+          </h6>
+          <?php echo $content ?>
+        </div>
+      </div> <!-- end row -->
       
-      <hr />
-      <footer>
-        <p> Content (C) <a href="mailto:anorwell@gmail.com">Arron Norwell.</a>.  This website is on <a href="http://github.com/ANorwell/website">github.</a></p>
-      </footer>
+      <?php
+            //end do-while loop
+          } while($gRow = mysql_fetch_assoc($gPost))
+      ?>
+    </div> <!-- end #content -->
 
-
-    </div> <!-- /container -->
-
- 
-
-    <script src="bootstrap/js/bootstrap-collapse.js"></script> 
-
- 
-  </body> 
+    <?php if (!array_key_exists("id", $_GET)) { ?>
+    <ul class="pager">
+      <?php if ($gFirst > 0) { ?>
+      <li class="previous">
+        <a href="indexbs.php?<?php echo $gQuery . '&first='. ($gFirst-$gConfig['postsPerPage']) ?>">Newer</a>
+      </li>
+      <?php } ?>
+      
+      <li class="next">
+        <a href="indexbs.php?<?php echo $gQuery . '&first='. ($gFirst+$gConfig['postsPerPage']) ?>">Older</a>
+      </li>
+    </ul>
+    <?php } ?>
+    
+    <hr />
+    <footer>
+      <p> Content (C) <a href="mailto:anorwell@gmail.com">Arron Norwell.</a>.  This website is on <a href="http://github.com/ANorwell/website">github.</a></p>
+    </footer>
+  </div> <!-- /container -->
+  <script src="bootstrap/js/bootstrap-collapse.js"></script> 
+</body> 
 </html>      
-  </body>
-</html>
