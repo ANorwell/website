@@ -113,7 +113,7 @@ error_log($gQuery);
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
       }
       .post > p {
-        font: normal normal normal 19px/25px "TeX Gyre Schola","Georgia","Bitstream Charter","Century Schoolbook L","Liberation Serif","Times",serif;
+        font: normal normal normal 16px/21px "TeX Gyre Schola","Georgia","Bitstream Charter","Century Schoolbook L","Liberation Serif","Times",serif;
         color: #444;
       }
 
