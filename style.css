@@ -3,7 +3,7 @@ html,body {
             padding: 0;
             height: 100%;   
             background-color:#CFE2F8;
-            font: normal normal normal 19px/25px "TeX Gyre Schola","Georgia","Bitstream Charter","Century Schoolbook L","Liberation Serif","Times",serif;
+            font: normal normal normal medium "TeX Gyre Schola","Georgia","Bitstream Charter","Century Schoolbook L","Liberation Serif","Times",serif;
             color: #444;
             }
 
@@ -153,6 +153,8 @@ h3 {
 
 p {
     margin:0.5em;
+    font-size:19px;
+    line-height:25px;
     }
 
 ul {
