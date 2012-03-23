@@ -72,8 +72,20 @@ if ($_GET["id"]) {
 
   
     <link rel="stylesheet" type="text/css" href="style.css" />
+
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
     <script src="js/shared.js" type="text/javascript"></script>
+
+    <!-- syntaxhighlighter stuff -->
+    <link rel="stylesheet" href="syntaxhighlighter/styles/shCore.css" type="text/css" />
+    <link href="syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet" type="text/css" />
+    <script src="syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="syntaxhighlighter/scripts/shBrushRuby.js" type="text/javascript"></script>
+    <script src="syntaxhighlighter/scripts/shBrushJScript.js" type="text/javascript"></script>
+    <script src="syntaxhighlighter/scripts/shBrushCpp.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      SyntaxHighlighter.all()
+    </script>    
     <script type="text/javascript">
 
   var _gaq = _gaq || [];
