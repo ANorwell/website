@@ -202,7 +202,10 @@ def processGet(environ, start_response, config):
         columns = ['id', 'graph', 'date']
     else:
         tableName = config['postTable']
-        columns =  ['id','title','content','date','type']
+        if "title" in args:
+            columns = ['id', 'title']
+        else:
+            columns =  ['id','title','content','date','type']
     
 
     #Make query to get post(s), based on if id and tag are in query string
