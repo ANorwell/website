@@ -239,6 +239,9 @@ function getParams() {
 //the selected id instead of the end of the page.
 //To stop multiple calls to embed from colliding, the function
 //is locked while a <script> tag is being processed.
+//eg:
+// <div id="example-id"></div>
+// <script type="text/javascript">embed("https://gist.github.com/example.js" "example-id")</script>
 var gEmbedLock = false;
 var gEmbedSleepDuration = 50;
 
