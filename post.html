@@ -3,7 +3,8 @@
   <head>
     <title> Post </title>
     <script type="text/javascript" src="/ckeditor/ckeditor.js"></script>
-
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="js/post.js"></script>
     <script type="text/javascript">
 
   var _gaq = _gaq || [];
@@ -19,18 +20,23 @@
 </script>
   </head>
   <body>
-    <h2>Submit Post</h2>
+    <h2>Submit/Edit Post</h2>
 
     <div>
-    
       <form id="post" action="content.py" name="submit post" method="post">
-      Title: <input type="text" name="title"/><br/>
-      Tags: <input type="text" name="type"/><br/>
-      Content: <textarea rows="20" cols="100" name="content" id="content"></textarea><br/><br/>
-      Password: <input id="postpw" type="password" name="password" /><br/>
-      <input type="submit" value="POST!"/>
-    </form>
-
+        <label for="postlist">Edit:</label>
+        <select id="postlist" name="id" onchange="gPost.selectForEdit(this.value)">
+          <option id="option-none" value="none">(None)</option>
+        </select><br/>
+        <label for="formtitle">Title:</label>
+        <input type="text" name="title" id="formtitle"/><br/>
+        <label for="formtype">Tags:</label>
+        <input type="text" name="type" id="formtype"/><br/>
+        <textarea rows="20" cols="100" name="content" id="content"></textarea><br/><br/>
+        <label for="postpw">Password:</label>
+        <input id="postpw" type="password" name="password" /><br/>
+        <input type="submit" value="POST!"/>
+     </form>
     </div>
 
     <h2>Add Song</h2>
@@ -40,7 +46,7 @@
       File: <input type="file" name="songdata"/><br/>
       <input type="submit" value="POST!"/>
     </form>
-
+    
     <script type="text/javascript">
       CKEDITOR.replace( 'content' );
     </script>
