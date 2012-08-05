@@ -163,10 +163,6 @@ if ($_GET["id"]) {
 
       <div class="comments">
         <div class="commentsinner">
-          <fb:add-to-timeline show-faces="true" mode="button"></fb:add-to-timeline>
-          <div id="fbReadPost" style="margin:0.2em">
-            <a href='javascript:fbReadPost(<?php echo $_GET['id'] ?>)'>Show you read this post on Facebook!</a>
-          </div>
           <fb:like href='<?php echo $url ?>'
           send="true" width="500" show_faces="true" font="arial"></fb:like>
           <fb:comments href='<?php echo $url?>'
