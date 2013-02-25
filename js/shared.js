@@ -6,7 +6,7 @@ var gCanvasWidth = 150;
 
 //How far the server is in minutes from UTC.
 //TODO: breaks for savings time? 
-var gServerUTCDifference = 240;
+var gServerUTCDifference = 0;
 
 //Multiple calls to getContent will increment gFirstPost, so that
 //each call will get the next (older) batch of posts.

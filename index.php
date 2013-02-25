@@ -81,6 +81,7 @@ if ($_GET["id"]) {
     <link href="syntaxhighlighter/css/shThemeDefault.css" rel="stylesheet" type="text/css" />
     <script src="syntaxhighlighter/js/shCore.js" type="text/javascript"></script>
     <script src="syntaxhighlighter/js/shBrushRuby.js" type="text/javascript"></script>
+    <script src="syntaxhighlighter/js/shBrushScala.js" type="text/javascript"></script>
     <script src="syntaxhighlighter/js/shBrushJScript.js" type="text/javascript"></script>
     <script src="syntaxhighlighter/js/shBrushCpp.js" type="text/javascript"></script>
     <script type="text/javascript">
