@@ -327,6 +327,6 @@ class Handler:
 
 
 def application(environ, start_response):
-    config_loc = "/www/config-test.txt"
+    config_loc = "/etc/config.txt"
     h = Handler(config_loc)
     return h.handle_request(environ, start_response)
