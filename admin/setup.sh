@@ -27,7 +27,6 @@ sudo apt-get install uwsgi-plugin-python
   
 cat > /tmp/config.txt <<- EOM
 
-echo "
  #Database info
 host = localhost
 user = anorwell
