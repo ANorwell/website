@@ -327,6 +327,6 @@ class Handler:
 
 
 def application(environ, start_response):
-    config_loc = "/etc/config.txt"
+    config_loc = "/etc/anorwell.conf"
     h = Handler(config_loc)
     return h.handle_request(environ, start_response)
