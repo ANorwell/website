@@ -24,10 +24,7 @@ sudo apt-get install uwsgi-plugin-python
  sudo cp nginx/anorwell.com /etc/nginx/sites-enabled/
  
  sudo cp uwsgi/anorwell.ini /etc/uwsgi/apps-enabled/
- 
- sudo systemctl restart uwsgi
- 
- 
+  
 cat > /tmp/config.txt <<- EOM
 
 echo "
@@ -48,3 +45,5 @@ EOM
 
 sudo mv /tmp/config.txt /etc/anorwell.conf
 sudo chmod 777 /etc/anorwell.conf
+
+ sudo systemctl restart uwsgi
