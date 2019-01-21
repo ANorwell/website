@@ -9,7 +9,6 @@ projects.html
 listen.html
 js/
 content.py
-
 indexbs.php
 ]
          
