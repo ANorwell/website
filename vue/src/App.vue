@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div id="top"><div id="header"><h3>Arron Norwell - Posts</h3></div></div>
+    <div id="top"><div id="header"><h3>Arron Norwell</h3></div></div>
     <div class="posts">
       <Post
         v-for="post in posts"
