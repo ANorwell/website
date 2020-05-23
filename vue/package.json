@@ -3,26 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "tsc": "tsc",
-    "precompile": "tsc --outDir precompile/js precompile/precompile.ts && node precompile/js/precompile.js",
+    "precompile": "tsc --project precompile && node precompile/build/main/precompile.js",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "front-matter": "^4.0.0",
+    "moment": "^2.25.3",
     "vue": "^2.6.11"
   },
   "devDependencies": {
     "@types/jest": "^25.2.1",
+    "@types/node": "^13.13.4",
     "@vue/cli-plugin-typescript": "^4.3.1",
     "@vue/cli-plugin-unit-jest": "^4.3.1",
     "@vue/cli-service": "^4.3.1",
     "@vue/test-utils": "^1.0.0-beta.33",
     "ts-jest": "^25.4.0",
+    "ts-node": "^8.9",
     "typescript": "^3.8.3",
-    "vue-template-compiler": "^2.6.11",
-    "ts-node": "^8.9"
+    "vue-template-compiler": "^2.6.11"
   },
   "postcss": {
     "plugins": {
