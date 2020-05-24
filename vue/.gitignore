@@ -19,3 +19,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
+
+#precompiled files
+/public/content/
+precompile/build/

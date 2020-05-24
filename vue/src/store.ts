@@ -1,18 +1,42 @@
-interface PostData {
+import { Moment } from 'moment';
+
+interface PostSummary {
+    path: string;
     title: string;
-    content: string;
+    date: Moment;
 }
 
-const store = {
-    data: {
-        posts: [] as PostData[],
-    },
+class PostData {
+    constructor(public summary: PostSummary, public content: string) {}
+}
 
-    fetchPosts: () => {
-        fetch('http://anorwell.com/content.py')
-            .then((response) => response.json())
-            .then((json) => store.data.posts = json);
-    },
-};
+class Store {    
+    public data = {
+         posts: [] as PostData[],
+    };
 
-export default store;
+    private manifest: PostSummary[]|null = null;
+
+    public async fetchPosts() {
+        const toFetch = await this.getManifest();
+        this.data.posts = await Promise.all(toFetch.map(async (p) => this.fetchPostData(p)));
+        console.log(this.data);
+    }
+
+    private async getManifest(): Promise<PostSummary[]> {
+        if (this.manifest === null) {
+            const out: PostSummary[] = await (await fetch('/content/posts.json')).json();
+            this.manifest = out;
+        }
+        console.log('returning', this.manifest);
+        return this.manifest as PostSummary[];
+    }
+
+    private async fetchPostData(summary: PostSummary): Promise<PostData> {
+        const data = await (await fetch(summary.path)).text();
+        return new PostData(summary, data);
+    }
+
+}
+
+export default Store;

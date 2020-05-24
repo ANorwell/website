@@ -1,19 +1,21 @@
 <template>
   <div class="post">
-    <h1>{{ title }}</h1>
+    <h1>{{ summary.title }}</h1>
+    <h3>{{ summary.date }}</h3>
     <div class="content" v-html="content"></div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue';
+import { Moment } from 'moment';
 
 export default Vue.extend({
-  name: "Post",
+  name: 'Post',
   props: {
-    title: String,
-    content: String
-  }
+    summary: Object,
+    content: String,
+  },
 });
 </script>
 

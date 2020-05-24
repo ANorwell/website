@@ -5,29 +5,39 @@ import fm from "front-matter"
 import moment, { Moment } from "moment"
 
 let config = {
+  // where to place generated posts, relative to outDir
   posts: "content/posts",
-  outDir: "dist"
+
+  // Where to place the posts manifest file, relative to outDir
+  manifestPath: "content/posts.json",
+
+  // The parent directory for precompiled assets
+  outDir: "public"
 }
 
 class Post {
-  constructor(public file: string, public title: string, public date: Moment, public content: string) {}
+  constructor(
+    public file: string,
+    public title: string,
+    public date: Moment,
+    public content: string) {}
 
   toSummary() {
-    return { file: this.file, title: this.title, date: this.date.format() }
+    return { path: this.file, title: this.title, date: this.date.format() }
   }
 }
 
 async function run() {
   let posts = await loadPosts(config.posts)
   posts.forEach(async p => await writePost(config.outDir, p))
-  await writePostIndex(config.outDir, posts)
+  await writeManifest(`${config.outDir}/${config.manifestPath}`, posts)
 }
 
 async function loadPosts(dir: string): Promise<Array<Post>> {
   let files = await promisify(fs.readdir)(dir)
   let out: Post[] = []
   for(let file of files) {
-    out.push(await precompileFile(dir + "/" + file))
+    out.push(await parsePost(dir + "/" + file))
   };
   return out
 }
@@ -40,15 +50,15 @@ async function writePost(outDir: string, post: Post): Promise<void> {
   await promisify(fs.writeFile)(fullPath, post.content)
 }
 
-async function writePostIndex(outDir: string, posts: Array<Post>) {
+async function writeManifest(outPath: string, posts: Array<Post>) {
   let index = posts
     .sort((a, b) => b.date.valueOf() - a.date.valueOf()) //descending order by date
     .map(p => p.toSummary())
 
-  await promisify(fs.writeFile)(`${outDir}/posts.json`, JSON.stringify(index))
+  await promisify(fs.writeFile)(outPath, JSON.stringify(index))
 }
 
-async function precompileFile(path: string): Promise<Post> {
+async function parsePost(path: string): Promise<Post> {
   let content = await promisify(fs.readFile)(path)
   let parsed = fm<any>(content.toString())
   let time = moment(parsed.attributes.date)

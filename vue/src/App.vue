@@ -1,11 +1,15 @@
 <template>
   <div id="app">
-    <div id="top"><div id="header"><h3>Arron Norwell</h3></div></div>
+    <div id="top">
+      <div id="header">
+        <h3>Arron Norwell</h3>
+      </div>
+    </div>
     <div class="posts">
       <Post
         v-for="post in posts"
-        v-bind:key="post.title"
-        v-bind:title="post.title"
+        v-bind:key="post.summary.title"
+        v-bind:summary="post.summary"
         v-bind:content="post.content"
       ></Post>
     </div>
@@ -13,19 +17,21 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import Post from "./components/Post.vue";
-import store from "./store";
+import Vue from 'vue';
+import Post from './components/Post.vue';
+import Store from './store';
 
-document.title="Arron Norwell"
+document.title = 'Arron Norwell';
+
+const store = new Store();
 
 export default Vue.extend({
-  name: "app",
+  name: 'app',
   components: {
-    Post
+    Post,
   },
   data: () => store.data,
-  created: () => store.fetchPosts()
+  created: () => store.fetchPosts(),
 });
 </script>
 
@@ -44,7 +50,7 @@ body {
 #top {
   background-color: #00042b;
   height: 2em;
-  top: 50%;  
+  top: 50%;
   vertical-align: middle;
   padding-left: 1em;
   display: flex;
