@@ -3,7 +3,7 @@ var store = {
         posts: [],
     },
     fetchPosts: function () {
-        fetch('http://anorwell.com/content.py')
+        fetch('http://anorwell.com/posts.json')
             .then(function (response) { return response.json(); })
             .then(function (json) { return store.data.posts = json; });
     },
