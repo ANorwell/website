@@ -11,7 +11,7 @@ class PostData {
     constructor(public summary: PostSummary, public content: string) {}
 }
 
-class Store {    
+class Store {
     public data = {
          posts: [] as PostData[],
     };
@@ -21,7 +21,6 @@ class Store {
     public async fetchPosts() {
         const toFetch = await this.getManifest();
         this.data.posts = await Promise.all(toFetch.map(async (p) => this.fetchPostData(p)));
-        console.log(this.data);
     }
 
     private async getManifest(): Promise<PostSummary[]> {
@@ -29,7 +28,7 @@ class Store {
             const out: PostSummary[] = await (await fetch('/content/posts.json')).json();
             this.manifest = out;
         }
-        this.manifest.forEach(p => p.date = moment(p.date))
+        this.manifest.forEach((p) => p.date = moment(p.date));
         return this.manifest as PostSummary[];
     }
 

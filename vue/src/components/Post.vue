@@ -18,9 +18,9 @@ export default Vue.extend({
   },
   computed: {
     formattedDate(): string {
-      return this.summary.date.format("MMM DD, YYYY");
-    }
-  }
+      return this.summary.date.format('MMM DD, YYYY');
+    },
+  },
 });
 </script>
 
