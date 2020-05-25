@@ -1,7 +1,7 @@
 <template>
   <div class="post">
     <h1>{{ summary.title }}</h1>
-    <h3>{{ summary.date }}</h3>
+    <h4>{{ formattedDate }}</h4>
     <div class="content" v-html="content"></div>
   </div>
 </template>
@@ -16,6 +16,11 @@ export default Vue.extend({
     summary: Object,
     content: String,
   },
+  computed: {
+    formattedDate(): string {
+      return this.summary.date.format("MMM DD, YYYY");
+    }
+  }
 });
 </script>
 

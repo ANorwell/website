@@ -1,8 +1,9 @@
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 
 interface PostSummary {
     path: string;
     title: string;
+    tags: string;
     date: Moment;
 }
 
@@ -28,7 +29,7 @@ class Store {
             const out: PostSummary[] = await (await fetch('/content/posts.json')).json();
             this.manifest = out;
         }
-        console.log('returning', this.manifest);
+        this.manifest.forEach(p => p.date = moment(p.date))
         return this.manifest as PostSummary[];
     }
 

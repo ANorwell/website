@@ -20,10 +20,11 @@ class Post {
     public file: string,
     public title: string,
     public date: Moment,
+    public tags: string[],
     public content: string) {}
 
   toSummary() {
-    return { path: this.file, title: this.title, date: this.date.format() }
+    return { path: this.file, title: this.title, tags: this.tags, date: this.date.format() }
   }
 }
 
@@ -62,7 +63,8 @@ async function parsePost(path: string): Promise<Post> {
   let content = await promisify(fs.readFile)(path)
   let parsed = fm<any>(content.toString())
   let time = moment(parsed.attributes.date)
-  return new Post(path, parsed.attributes.title, time, parsed.body)
+  let tags = (parsed.attributes || '').tags.split(",").map((s: string) => s.replace(/ /g, ''))
+  return new Post(path, parsed.attributes.title, time, tags, parsed.body)
 }
 
 console.log("Precompiling")
