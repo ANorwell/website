@@ -30,7 +30,10 @@ class Post {
 
 async function run() {
   let posts = await loadPosts(config.posts)
-  posts.forEach(async p => await writePost(config.outDir, p))
+
+  for (const p of posts) {
+    await writePost(config.outDir, p)
+  }
   await writeManifest(`${config.outDir}/${config.manifestPath}`, posts)
 }
 
@@ -68,4 +71,5 @@ async function parsePost(path: string): Promise<Post> {
 }
 
 console.log("Precompiling")
-run()
+
+run().catch((reason) => console.log(reason))
