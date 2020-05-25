@@ -10,11 +10,13 @@ jobs:
     steps:
     - name: checkout 
       uses: actions/checkout@v2
-    - name: Perform a build of the website
+    - name: Use node
       uses: actions/setup-node@v1
       with:
         node-version: '14.x'
+    - name: build
       run: |
+        cd blog
         npm install
         npm run precompile
         npm run build --if-present
