@@ -1,0 +1,37 @@
+---
+title: "English/Transliterated Persian Translator"
+date: 2011-05-22 21:16:42
+tags: projects, code
+---
+<p><strong>UPDATE:</strong> Not even a week after I made this, <a href="http://googlecode.blogspot.com/2011/05/spring-cleaning-for-some-of-our-apis.html">Google announces </a> that they will be shutting down or deprecating all of the APIs used in this project. This is slightly frustrating.</p>
+
+<p>---</p>
+
+<p>
+	Quick, pronounce this:</p>
+<blockquote>
+	<p>
+		&#1607;&#1575;&#1608;&#1585;&#1705;&#1585;&#1575;&#1601;&#1578; &#1605;&#1606; &#1662;&#1585; &#1605;&#1575;&#1585;&#1605;&#1575;&#1607;&#1609; &#1575;&#1587;&#1578;</p>
+</blockquote>
+<p>
+	This is <a href="http://en.wikipedia.org/wiki/Persian_language">Persian</a>. It uses the <a href="http://en.wikipedia.org/wiki/Perso-Arabic_script">Perso-Arabic alphabet</a>. If you&#39;re like me (that is, you don&#39;t know Persian), you can&#39;t pronounce this easily, so <a href="http://translate.google.com/#en|fa|%0A">tools that translate from English to Persian</a> aren&#39;t of much use. Instead, you want an English to transliterated Persian translator; unfortunately, these don&#39;t exist.</p>
+<p>
+	So I <a href="http://anorwell.com/engping/">made one</a>.</p>
+<p>
+	<iframe align="middle" frameborder="1" height="275" name="English to Transliterated Persian Translator" scrolling="no" src="http://anorwell.com/engping/" width="500"></iframe></p>
+<h2>
+	How it Works</h2>
+<p>
+	Google provides APIs for <a href="http://code.google.com/apis/language/translate/overview.html">translation</a>, <a href="http://code.google.com/apis/language/transliterate/overview.html">English to Persian transliteration</a>, and <a href="http://code.google.com/apis/language/diacritize/overview.html">Arabic diacritization</a>.</p>
+<p>
+	<a href="http://en.wikipedia.org/wiki/Transliteration">Transliteration</a>&nbsp;is the act of converting the alphabet used to represent a languge from one to another. Transliteration to English (from, for example, Arabic-based alphabets) is well-studied. Often a user will have access to only a western keyboard, but want to type in Persian, or Chinese, or Russian. Tools like <a href="http://www.google.com/transliterate/">Google Transliteration</a>&nbsp;will do this, but they don&#39;t go the other way.</p>
+<p>
+	Transliterating well is enormously difficult, as hard as translation: word meaning and intent is important. For example, how do you pronounce &quot;bow&quot;? It&#39;s not clear, because the word for the thing that shoots an arrow is pronounced differently from the word for bending at the waist. In other alphabets, these could have different transliterations.</p>
+<p>
+	However, transliterating poorly is often not hard: <a href="http://en.wikipedia.org/wiki/Romanization_of_Persian">make a one-to-one letter map from one alphabet to the other</a>. However in Persian, the written form has no vowels--doing this naively would result in a mess of consonants. Diacritization, the act of adding the vowel pronounciation marks to Persian, can provide the vowels.</p>
+<p>
+	To translate from English to transliterated Persian, the tool first translates to Persian, diacritizes the result, and then transliterates the diacritized Persian-alphabet text back to English. The first two steps are done using Google&#39;s APIs, and the last step here is implemented, in rudimentary fashion, by me. The first two steps also tend to make errors--after all, translation and diacritization are hard problems. Nonetheless, the end-result seems to be OK: for simple sentences, the end result is readable and either correct or close to correct. Often, the translation itself will be poor, which is a limitation of translation being such a hard problem.</p>
+<p>
+	The other direction, transliterated Persian to English, is easier implementation-wise, because Google&#39;s will transliterate the &quot;pinglish&quot; back to real Persian (transliteration API) and then to English (translation API). It&#39;s just a matter of stringing the APIs together.</p>
+
+<p>(The pronunciation of the phrase at the top? <a href="http://www.omniglot.com/language/phrases/hovercraft.htm">"havercrafte man pore marmahi ast"</a>)</p>

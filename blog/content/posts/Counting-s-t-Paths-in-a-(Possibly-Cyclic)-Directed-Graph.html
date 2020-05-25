@@ -1,0 +1,120 @@
+---
+title: "Counting s-t Paths in a (Possibly Cyclic) Directed Graph"
+date: 2012-03-26 21:13:09
+tags: algorithms, theory, ruby
+---
+
+<p>
+Suppose you have a directed graph G with a source node s and a sink node t. You wish to count the number of different s-t paths (two paths differ as long as they are not the exact same sequence of edges). G may have cycles, so this number is possibly infinite; you wish to detect this.</p>
+<p>
+If you suppose G is acyclic, a natural approach might be to do a depth first search from s. Each time you reach t, you have found another path.</p>
+<pre class="brush: ruby">
+class Node
+  def dfs_count_paths(target)
+    @@count += 1 if self == target
+    @visited = true
+    for child in @children
+      child.dfs_count_paths(target)
+    end
+   @visited = false
+  end
+end
+</pre>
+<h2>Dynamic Programming</h2>
+<p>
+Besides not working in the acyclic case, this has the potential to be very slow, because it will enumerate every single path in the graph. For example, if w is another node, there could be 100 s-&gt;w paths and 100 w-&gt;t paths; all 10,000 combinations of these two are valid s-&gt;t paths. Enumerating them all is expensive. However, if we knew both the number of s-&gt;w paths and w-&gt;t paths, we could compute this directly. With some thought, this idea can become a better approach. In a directed acyclic graph, we can order the vertices so that edges only point forward. In other words, if u is a descendent of v, then u will come after v in the sorted list of nodes. This is called a topological sort. Using this ordering, call s vertex 1, the next vertex 2, and so on, up to t which we may call vertex n. The number of paths from 1 to 2 is just the number of edges from 1 to 2. The number of paths from 1 to 3 is the number of (direct) edges from 1 to 3, as well as paths that use 2 as an intermediate vertex. More generally, let d(j) be the number of paths from 1 to j, then we have that:</p>
+<p>
+<img src="src/images/CodeCogsEqn.png" ></img></p>
+<p>
+This gives a dynamic programming algorithm: for j from 2 to n, compute d(j). d(n) gives the number of paths from 1 to n. This is much more efficient: for each node, computing d takes time proportional to the in-degree of the node, and overall it will take O(E) time, where E is the number of edges in the graph.</p>
+<h2>Topological Sorts</h2>
+<p>
+How do we topologically sort the graph? A depth-first search will visit all children of a node, and then finish visiting the node itself. This sounds a lot like the property we want for our topological sort: that the descendents of the node come after the node itself. We can express this as the following algorithm:</p>
+<pre class="brush: ruby">
+class Node
+  def topological_sort
+    @visited = true
+    sorted_nodes = []
+    for child in @children
+      if not child.visited
+         sorted_nodes = child.topological_sort + sorted_nodes
+      end
+    end
+    return [self] + sorted_nodes
+  end
+end
+</pre>
+<h2>Detecting cycles</h2>
+<p>
+The combination of a topological sort with dynamic programming gives us a good algorithm for counting paths in an acyclic graph. What about when cycles are allowed? After the topological sort, if u comes after v, then u is a descendent of v, so there is a path from v to u. If there is also an edge from u to v, then there is a cycle. This edge is called a back-edge, because it goes against the direction of the topological sort.</p>
+<p>
+So, we may detect cycles by looking for back edges. However, such a cycle doesn&rsquo;t necessarily indicate that there are an infinite number of paths from s to t, because the cycle may not lie on a path from s to t at all. This is because there are &ldquo;dead ends&rdquo; that cannot reach t. We only wish to consider cycles involving nodes that can reach t.</p>
+<p>
+To detect this, we again turn to our trusty tool the depth first search. The nodes that can reach t are the same as the nodes that we can see when exploring backwards along edges out from t. In other words, we will follow in-edges, not out-edges:</p>
+<pre class="brush: ruby">
+  def prune_unreachable_nodes
+    @visit = CAN_REACH_TARGET
+    for node in @parents
+      if node.visit == UNVISITED
+        node.prune_unreachable_nodes
+      end
+    end
+  end
+</pre>
+<p>
+This marks only the nodes that can reach t; the other (unreachable) nodes can be ignored.</p>
+<h2>Putting It Together</h2>
+<p>
+Now, to put it all together, the algorithm is as follows:&nbsp;</p>
+<ol>
+<li>
+Mark the nodes that can reach t using a DFS.</li>
+<li>
+Topologically sort these nodes.</li>
+<li>
+Starting from the position of node s in the topological sort, perform the dynamic programming algorithm to compute d for each node.</li>
+<li>
+If at any point a back edge is encountered, then there are an infinite number of paths.</li>
+<li>
+d(t) indicates the number of paths from s to t.</li>
+</ol>
+<p>
+The following code gives the dynamic programming part of the approach:</p>
+<pre class="brush: ruby">
+class Graph
+  def count_paths
+    @t.prune
+    if not @s.visit == Node::CAN_REACH_TARGET
+      return 0
+    end
+    sorted_nodes = @s.topological_sort
+    for i in 0...sorted_nodes.length
+      sorted_nodes[i].position(i)
+      if sorted_nodes[i] == @s
+        start_pos = i
+      end
+    end
+    init = sorted_nodes[start_pos]
+    init.paths(1)
+    for i in start_pos...sorted_nodes.length
+      cur = sorted_nodes[i]
+      for child,count in cur.children
+        if child.visit != Node::UNVISITED and child.position &lt;= i
+          return &quot;INFINITE PATHS&quot;
+        end
+      end
+      #count the paths from init to node i, and save that number in node i
+      paths = 0
+      if init.children[cur]
+        paths = init.children[cur]
+      end
+      for prev,count in cur.parents
+        paths += prev.paths*count
+      end
+      cur.paths(paths)
+    end
+    @t.paths
+  end
+end</pre>
+
+

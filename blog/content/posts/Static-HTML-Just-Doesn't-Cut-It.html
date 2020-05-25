@@ -1,0 +1,14 @@
+---
+title: "Static HTML Just Doesn't Cut It"
+date: 2010-08-23 21:46:32
+tags: code, meta
+---
+<p>I rolled out a new version of the site today.  Pretty much everything looks the same, but the internals have changed a bunch.</p>
+
+<p> Much of the reason I made this site was to play around with some web development technologies.  (The design of this site is intentionally terrible, because canvas is fun.)  One thing that became apparently pretty quickly is that a pure client-side logic (html + css + javascript) doesn't really cut it. Despite CSS's best intentions, it's very hard to separate content from layout or logic.  The first version of the site worked like this, and I'd often find myself duplicating content between the front page and one of the content pages. Adding posts by updating HTML was a big pain, and every time I wanted to add content, I'd end up fiddling with the site rather than doing what I wanted to do.  This would be great if website design is interesting, but for the most part, it's not.  Worrying about browser compatibility is not interesting.  Writing CSS is not interesting.  Tweaking HTML is not interesting.  Backend code, or writing <a href="graph.html">actual interesting JS</a>, is time much better spent.</p>
+
+<p>The new setup is much more sane. All the content lives in a mySQL database, with a python JSON API that pages call asynchronously to fetch content. Posts are tagged with categories, which determines which of the menu pages the posts will show up on.  The <a href="listen.html">listen page</a> has its own song database. This approach is straightforward and flexible.</p>
+
+<p>In other words, I've written my own poor implementation of blog software.</p>
+
+<p>The source code is <a href="http://github.com/ANorwell/website">on github</a>.</p>
