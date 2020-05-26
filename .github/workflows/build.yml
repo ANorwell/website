@@ -27,13 +27,13 @@ jobs:
         DEPLOY_SSH_PRIVATE_KEY: ${{ secrets.deploy_ssh }}
         DEPLOY_HOST: ${{ secrets.deploy_host }}
       run: |
-        pwd
-        ls
-        echo $DEPLOY_SSH_PRIVATE_KEY > ./private_key
-        ssh-add ./private_key
-        rsync ./blog/dist/* anorwell@$DEPLOY_HOST:/www/
+        eval `ssh-agent -s`
+        ssh-add <(echo "$DEPLOY_SSH_PRIVATE_KEY")
+        ssh-add -l
+        ssh -vv -o "StrictHostKeyChecking=no" anorwell@$DEPLOY_HOST 'echo hello'
+        rsync -rv ./blog/dist/* anorwell@$DEPLOY_HOST:/www/
     - name: Archive production artifacts
       uses: actions/upload-artifact@v1
       with:
         name: dist
-        path: blog/dist    
+        path: blog/dist
