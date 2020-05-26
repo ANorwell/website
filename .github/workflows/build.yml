@@ -25,12 +25,12 @@ jobs:
     - name: deploy
       env:
         DEPLOY_SSH_PRIVATE_KEY: ${{ secrets.deploy_ssh }}
-        DEPLOY_TARGET: 1.2.3.4
-      run:
+        DEPLOY_HOST: ${{ secrets.deploy_host }}
+      run: |
         pwd
         ls
         echo $DEPLOY_SSH_PRIVATE_KEY > ./private_key
-        rsync ./blog/dist $DEPLOY_TARGET:/var/www/
+        rsync ./blog/dist/* anorwell@$DEPLOY_HOST:/www/
     - name: Archive production artifacts
       uses: actions/upload-artifact@v1
       with:
