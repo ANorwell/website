@@ -66,10 +66,10 @@ async function parsePost(path: string): Promise<Post> {
   let content = await promisify(fs.readFile)(path)
   let parsed = fm<any>(content.toString())
   let time = moment(parsed.attributes.date)
-  let tags = (parsed.attributes || '').tags.split(",").map((s: string) => s.replace(/ /g, ''))
+  let tags = (parsed.attributes.tags || '').split(",").map((s: string) => s.replace(/ /g, ''))
   return new Post(path, parsed.attributes.title, time, tags, parsed.body)
 }
 
 console.log("Precompiling")
 
-run().catch((reason) => console.log(reason))
+run().catch((reason) => { console.log(reason); process.exit(1) })
