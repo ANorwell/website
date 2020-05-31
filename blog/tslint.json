@@ -15,6 +15,7 @@
     "ordered-imports": false,
     "object-literal-sort-keys": false,
     "no-consecutive-blank-lines": false,
-    "max-classes-per-file": { "options": 100 }
+    "max-classes-per-file": { "options": 100 },
+    "trailing-comma": "never"
   }
 }

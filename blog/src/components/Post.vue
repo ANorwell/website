@@ -1,7 +1,7 @@
 <template>
   <div class="post">
     <h1>{{ summary.title }}</h1>
-    <h4>{{ formattedDate }}</h4>
+    <p class="postinfo"> {{ formattedDate}} - {{ tags }}
     <div class="content" v-html="content"></div>
   </div>
 </template>
@@ -10,8 +10,7 @@
 import Vue from 'vue';
 import { Moment } from 'moment';
 
-export default Vue.extend({
-  name: 'Post',
+export default Vue.component('Post', {
   props: {
     summary: Object,
     content: String,
@@ -20,12 +19,20 @@ export default Vue.extend({
     formattedDate(): string {
       return this.summary.date.format('MMM DD, YYYY');
     },
+    tags(): string {
+      return this.summary.tags.join(", ");
+    }
   },
 });
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.postinfo {
+  font-size: 14px;
+  font-family: Verdana, Arial, sans-serif;
+  color:rgba(0, 0, 0, 0.55);
+}
 ul {
   list-style-type: none;
   padding: 0;

@@ -72,4 +72,7 @@ async function parsePost(path: string): Promise<Post> {
 
 console.log("Precompiling")
 
-run().catch((reason) => { console.log(reason); process.exit(1) })
+run().catch((reason) => { 
+  console.log(reason)
+  process.exit(1) 
+})

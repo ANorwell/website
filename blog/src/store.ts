@@ -18,8 +18,17 @@ class Store {
 
     private manifest: PostSummary[]|null = null;
 
-    public async fetchPosts() {
-        const toFetch = await this.getManifest();
+    public async fetchPosts(tag: string | null = null) {
+        let toFetch = (await this.getManifest());
+
+        if (tag !== null) {
+            toFetch = toFetch.filter((post) => post.tags.includes(tag));
+        }
+
+        if (tag !== 'draft') {
+            toFetch = toFetch.filter((post) => !post.tags.includes('draft'));
+        }
+
         this.data.posts = await Promise.all(toFetch.map(async (p) => this.fetchPostData(p)));
     }
 

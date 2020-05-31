@@ -1,10 +1,5 @@
 <template>
-  <div id="app">
-    <div id="top">
-      <div id="header">
-        <h3>Arron Norwell</h3>
-      </div>
-    </div>
+
     <div class="posts">
       <Post
         v-for="post in posts"
@@ -25,41 +20,25 @@ document.title = 'Arron Norwell';
 
 const store = new Store();
 
-export default Vue.extend({
-  name: 'app',
+export default Vue.component('app', {
   components: {
     Post,
   },
   data: () => store.data,
-  created: () => store.fetchPosts(),
+  created: function() { store.fetchPosts(this.$route.params.tag) },
+  computed: {
+    tag(): string {
+      return this.$route.params.tag;
+    }
+  }
 });
 </script>
 
 <style>
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+.posts {
+  font-family: Verdana, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-}
-
-body {
-  margin: 0 !important;
-}
-
-#top {
-  background-color: #00042b;
-  height: 2em;
-  top: 50%;
-  vertical-align: middle;
-  padding-left: 1em;
-  display: flex;
-  align-items: center;
-}
-
-#header {
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-  color: aliceblue;
 }
 </style>
