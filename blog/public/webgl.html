@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Arron Norwell - WebGL</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+      attribute vec3 aVertexPosition;
+
+      //uniform mat4 uMVMatrix;
+      //uniform mat4 uPMatrix;
+
+      void main(void) {
+        gl_Position = vec4(aVertexPosition, 1.0);
+      }
+    </script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+      void main(void) {
+        gl_FragColor = vec4(0.4, 0.2, 0.3, 1.0);
+      }
+    </script>
+
+
+    <script type="text/javascript" src="gl/sylvester.js"></script>
+    <script type="text/javascript" src="gl/glUtils.js"></script>
+    <script type="text/javascript" src="gl/main.js"></script>
+
+  </head>
+
+  <body onload="glStart();">
+    <div class="leftContainer">
+      <script type="text/javascript" src="js/menu.js"></script>
+    </div>
+
+    
+      
+
+    <script type="text/javascript" src="js/header.js"></script>
+      <!-- content -->
+  <div class="main" id="main">
+
+    <!-- The canvas display -->
+    <canvas id="webgl" style="border: 1px;" width="getHeight();" height="getWidth();">
+    </canvas>
+  </div>
+
+    <!-- The shaders -->
+
+    
+  </body>
+</html>

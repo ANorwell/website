@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Arron Norwell</title>
+<meta name="description" content="Music recorded by Arron Norwell."></meta>
+<meta name="keywords" content="norwell, arron, arron norwell, music, guitar, piano, recording, guitar music, arron norwell music, arron music"></meta>
+
+<link rel="stylesheet" type="text/css" href="style.css" />
+<link rel="stylesheet" type="text/css" href="jplayer.css" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script src="js/shared.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/jquery.jplayer.min.js"></script> 
+
+<script type="text/javascript" src="js/listen.js"></script>
+
+
+<!-- simple play function to add WMA support -->
+<script type="text/javascript">
+<!--
+    function play(song, isWMA) {
+
+    if (isWMA) {
+        $("#embed_player").html('<embed src="' + song + '" width="185px"/>');
+        $("#embed_player_div").css("display", "block");
+    } else {
+        for (var i in myPlayList) {
+            if (myPlayList[i].mp3 === song) {
+                playListChangeCallback(i);
+            }
+        }
+    }
+}
+-->
+</script>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29014426-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+
+<body>
+
+  <div id="wrapper">
+    <div id="upperbarrier"></div>
+
+  
+  <div class="leftContainer">
+      <script type="text/javascript">drawMenu()</script>
+
+      <div class="left" id="embed_player_div" style="display:none">
+      <a id="embed_player">
+      </a>
+      </div>
+  </div>
+
+  <script type="text/javascript">drawHeader()</script>
+
+  <!-- player -->
+
+  <div id="jquery_jplayer"></div> 
+
+  <div class="main jp-playlist-player">
+    <div class="jp-interface">
+      <ul class="jp-controls">
+        <li><a href="#" id="jplayer_play" class="jp-play" tabindex="1">play</a></li>
+        <li><a href="#" id="jplayer_pause" class="jp-pause" tabindex="1">pause</a></li>
+        <li><a href="#" id="jplayer_stop" class="jp-stop" tabindex="1">stop</a></li>
+        <li><a href="#" id="jplayer_volume_min" class="jp-volume-min" tabindex="1">min volume</a></li>
+        <li><a href="#" id="jplayer_volume_max" class="jp-volume-max" tabindex="1">max volume</a></li>
+        <li><a href="#" id="jplayer_previous" class="jp-previous" tabindex="1">previous</a></li>
+        <li><a href="#" id="jplayer_next" class="jp-next" tabindex="1">next</a></li>
+      </ul>
+      <div class="jp-progress">
+        <div id="jplayer_load_bar" class="jp-load-bar">
+          <div id="jplayer_play_bar" class="jp-play-bar"></div>
+        </div>
+      </div>
+      <div id="jplayer_volume_bar" class="jp-volume-bar">
+        <div id="jplayer_volume_bar_value" class="jp-volume-bar-value"></div>
+      </div>
+      <div id="jplayer_play_time" class="jp-play-time"></div>
+      <div id="jplayer_total_time" class="jp-total-time"></div>
+    </div>
+    <div id="jplayer_playlist" class="jp-playlist">
+      <ul>
+        <!-- The function displayPlayList() uses this unordered list -->
+        <li></li>
+      </ul>
+    </div>
+  </div>
+
+
+  
+  <!-- content -->
+  <div id="content">
+  </div>
+
+  <script type="text/javascript">emitEndOfPage('music')</script>
+
+  </div>
+  <script type="text/javascript">getContent('music')</script>
+
+  <script type="text/javascript">drawFooter()</script>
+</body>
+</html>

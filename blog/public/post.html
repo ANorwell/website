@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title> Post </title>
+    <script type="text/javascript" src="/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="js/post.js"></script>
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-29014426-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </head>
+  <body>
+    <h2>Submit/Edit Post</h2>
+
+    <div>
+      <form id="post" action="content.py" name="submit post" method="post">
+        <label for="postlist">Edit:</label>
+        <select id="postlist" name="id" onchange="gPost.selectForEdit(this.value)">
+          <option id="option-none" value="none">(None)</option>
+        </select><br/>
+        <label for="formtitle">Title:</label>
+        <input type="text" name="title" id="formtitle"/><br/>
+        <label for="formtype">Tags:</label>
+        <input type="text" name="type" id="formtype"/><br/>
+        <textarea rows="20" cols="100" name="content" id="content"></textarea><br/><br/>
+        <label for="postpw">Password:</label>
+        <input id="postpw" type="password" name="password" /><br/>
+        <input type="submit" value="POST!"/>
+     </form>
+    </div>
+
+    <h2>Add Song</h2>
+    <form id="song" action="content.py" name="submit post" method="post" enctype="multipart/form-data">
+      Name: <input type="text" name="name" /><br/>
+      Password: <input id="songpw" type="password" name="password" /><br/>
+      File: <input type="file" name="songdata"/><br/>
+      <input type="submit" value="POST!"/>
+    </form>
+    
+    <script type="text/javascript">
+      CKEDITOR.replace( 'content' );
+    </script>
+
+
+    
+  </body>
+</html>
