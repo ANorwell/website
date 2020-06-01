@@ -13,7 +13,7 @@ const router = new VueRouter({
   ]
 });
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 new Vue({
   router,

@@ -1,5 +1,4 @@
 <template>
-
     <div class="posts">
       <Post
         v-for="post in posts"
@@ -8,7 +7,6 @@
         v-bind:content="post.content"
       ></Post>
     </div>
-  </div>
 </template>
 
 <script lang="ts">
@@ -25,10 +23,16 @@ export default Vue.component('app', {
     Post,
   },
   data: () => store.data,
-  created: function() { store.fetchPosts(this.$route.params.tag) },
+  created(): void { store.fetchPosts(this.$route.params.tag);  },
   computed: {
     tag(): string {
       return this.$route.params.tag;
+    }
+  },
+  watch: {
+    $route(to, from): void {
+      store.fetchPosts(this.$route.params.tag);
+
     }
   }
 });
