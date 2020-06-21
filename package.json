@@ -10,6 +10,8 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@types/marked": "^0.7.4",
+    "marked": "^1.1.0",
     "vue": "^2.6.11",
     "vue-router": "^3.3.2"
   },

@@ -1,50 +1,243 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 exports.__esModule = true;
+var fs = require("fs");
+var path_1 = require("path");
+var util_1 = require("util");
 var front_matter_1 = require("front-matter");
-console.log("test");
-var str = "---\nx: thing\n---\nbody\n";
-console.log(front_matter_1["default"](str));
-/* import * as fs from "fs"
-import { promisify } from "util"
-import * as fm from "front-matter"
-import * as moment from "moment"
-//import { FrontMatterResult } from "front-matter"
-
-console.log("fm", fm)
-
-let str = `
------
-x: thing
------
-body
-`;
-
-console.log(fm.default(str)); */
-/* async function run() {
-  let out = await precompile("content/posts")
-  console.log(out)
-}
-
-async function precompile(dir: string) {
-  let files = await promisify(fs.readdir)(dir)
-  let out: string[] = []
-  for(let file of files) {
-    out.push(await precompileFile(dir + "/" + file))
-  };
-  return out
-}
-
-async function precompileFile(path: string) {
-  let content = await promisify(fs.readFile)(path)
-
-  console.log(fm)
-  console.log(fm.default(content.toString()))
-  return content.toString()
-}
-
-console.log("moment is", moment)
-//console.log(moment.Moment)
-
-console.log("fm", fm)
-console.log("Precompiling")
-run() */ 
+var moment_1 = require("moment");
+var markdown_1 = require("markdown");
+var Config = /** @class */ (function () {
+    function Config(
+    /**
+     * The parent directory in which the content lives.
+     * This directory should be of the form:
+     * <sourceDir>/<contentType>/<contentFile>
+     * For example, <sourceDir>/posts/MyPost.html
+     */
+    sourceDir, 
+    /**
+     * The output directory where precompiled content will be placed.
+     */
+    targetDir) {
+        this.sourceDir = sourceDir;
+        this.targetDir = targetDir;
+    }
+    Config.prototype.sourceContentDir = function (contentType) {
+        return this.sourceDir + "/" + contentType;
+    };
+    Config.prototype.targetContentDir = function (contentType) {
+        return this.targetDir + "/" + contentType;
+    };
+    return Config;
+}());
+var Post = /** @class */ (function () {
+    function Post(file, title, date, tags, content) {
+        this.file = file;
+        this.title = title;
+        this.date = date;
+        this.tags = tags;
+        this.content = content;
+    }
+    Post.prototype.toSummary = function () {
+        return { path: this.file, title: this.title, tags: this.tags, date: this.date.format() };
+    };
+    return Post;
+}());
+var Precompiler = /** @class */ (function () {
+    function Precompiler(config) {
+        this.config = config;
+    }
+    Precompiler.prototype.run = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var contentTypes, _i, contentTypes_1, contentType;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, util_1.promisify(fs.readdir)(config.sourceDir)];
+                    case 1:
+                        contentTypes = _a.sent();
+                        _i = 0, contentTypes_1 = contentTypes;
+                        _a.label = 2;
+                    case 2:
+                        if (!(_i < contentTypes_1.length)) return [3 /*break*/, 5];
+                        contentType = contentTypes_1[_i];
+                        return [4 /*yield*/, this.precompileContentType(contentType)];
+                    case 3:
+                        _a.sent();
+                        _a.label = 4;
+                    case 4:
+                        _i++;
+                        return [3 /*break*/, 2];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Precompiler.prototype.precompileContentType = function (contentType) {
+        return __awaiter(this, void 0, void 0, function () {
+            var contents, _i, contents_1, p;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.loadContents(contentType)];
+                    case 1:
+                        contents = _a.sent();
+                        _i = 0, contents_1 = contents;
+                        _a.label = 2;
+                    case 2:
+                        if (!(_i < contents_1.length)) return [3 /*break*/, 5];
+                        p = contents_1[_i];
+                        return [4 /*yield*/, this.writeContent(contentType, p)];
+                    case 3:
+                        _a.sent();
+                        _a.label = 4;
+                    case 4:
+                        _i++;
+                        return [3 /*break*/, 2];
+                    case 5: return [4 /*yield*/, this.writeManifest(contentType, contents)];
+                    case 6:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Precompiler.prototype.loadContents = function (contentType) {
+        return __awaiter(this, void 0, void 0, function () {
+            var files, out, _i, files_1, file, _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0: return [4 /*yield*/, util_1.promisify(fs.readdir)(config.sourceContentDir(contentType))];
+                    case 1:
+                        files = _c.sent();
+                        out = [];
+                        _i = 0, files_1 = files;
+                        _c.label = 2;
+                    case 2:
+                        if (!(_i < files_1.length)) return [3 /*break*/, 5];
+                        file = files_1[_i];
+                        _b = (_a = out).push;
+                        return [4 /*yield*/, this.parseContent(config.sourceContentDir(contentType) + "/" + file)];
+                    case 3:
+                        _b.apply(_a, [_c.sent()]);
+                        _c.label = 4;
+                    case 4:
+                        _i++;
+                        return [3 /*break*/, 2];
+                    case 5:
+                        ;
+                        return [2 /*return*/, out];
+                }
+            });
+        });
+    };
+    Precompiler.prototype.writeContent = function (contentType, post) {
+        return __awaiter(this, void 0, void 0, function () {
+            var fullPath, directory, transformedContent;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        fullPath = config.targetContentDir(contentType) + "/" + post.file;
+                        directory = path_1["default"].dirname(fullPath);
+                        transformedContent = this.generateContent(post);
+                        return [4 /*yield*/, util_1.promisify(fs.mkdir)(directory, { recursive: true })];
+                    case 1:
+                        _a.sent();
+                        return [4 /*yield*/, util_1.promisify(fs.writeFile)(fullPath, transformedContent)];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /**
+     * Generates the final content for this post.
+     * - if markdown, transforms into HTML.
+     * - otherwise, assumes HTML.
+     */
+    Precompiler.prototype.generateContent = function (post) {
+        var suffix = post.file.split(".")[-1];
+        if (suffix.toLowerCase() === "md") {
+            return markdown_1["default"].toHTML(post.content);
+        }
+        else {
+            return post.content;
+        }
+    };
+    Precompiler.prototype.writeManifest = function (contentType, posts) {
+        return __awaiter(this, void 0, void 0, function () {
+            var index, outPath;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        index = posts
+                            .sort(function (a, b) { return b.date.valueOf() - a.date.valueOf(); }) //descending order by date
+                            .map(function (p) { return p.toSummary(); });
+                        outPath = config.targetDir + "/" + contentType + ".json";
+                        return [4 /*yield*/, util_1.promisify(fs.writeFile)(outPath, JSON.stringify(index))];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Precompiler.prototype.parseContent = function (path) {
+        return __awaiter(this, void 0, void 0, function () {
+            var content, parsed, time, tags;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, util_1.promisify(fs.readFile)(path)];
+                    case 1:
+                        content = _a.sent();
+                        parsed = front_matter_1["default"](content.toString());
+                        time = moment_1["default"](parsed.attributes.date);
+                        tags = (parsed.attributes.tags || '').split(",").map(function (s) { return s.replace(/ /g, ''); });
+                        return [2 /*return*/, new Post(path, parsed.attributes.title, time, tags, parsed.body)];
+                }
+            });
+        });
+    };
+    return Precompiler;
+}());
+console.log("Precompiling");
+var config = new Config("content", "public/content");
+new Precompiler(config).run()["catch"](function (reason) {
+    console.log(reason);
+    process.exit(1);
+});

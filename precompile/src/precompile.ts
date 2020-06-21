@@ -3,6 +3,8 @@ import path from "path"
 import { promisify } from "util"
 import fm from "front-matter"
 import moment, { Moment } from "moment"
+import marked from "marked"
+
 
 class Config {
   constructor(
@@ -24,10 +26,6 @@ class Config {
   sourceContentDir(contentType: string) {
     return this.sourceDir + "/" + contentType
   }
-
-  targetContentDir(contentType: string) {
-    return this.targetDir + "/" + contentType
-  }  
 }
 
 class Post {
@@ -56,7 +54,7 @@ class Precompiler {
   async precompileContentType(contentType: string) {
     let contents = await this.loadContents(contentType)
     for (const p of contents) {
-      await this.writeContent(contentType, p)
+      await this.writeContent(p)
     }
     await this.writeManifest(contentType, contents)
   }
@@ -70,12 +68,28 @@ class Precompiler {
     return out
   }
 
-  async writeContent(contentType: string, post: Post): Promise<void> {
-    let fullPath = `${config.targetContentDir(contentType)}/${post.file}`
-    let directory = path.dirname(fullPath);
+  async writeContent(post: Post): Promise<void> {
+    const fullPath = `${config.targetDir}/${post.file}`
+    console.log(fullPath)
+    const directory = path.dirname(fullPath)
+    const transformedContent = this.generateContent(post)
 
     await promisify(fs.mkdir)(directory, { recursive: true })
-    await promisify(fs.writeFile)(fullPath, post.content)
+    await promisify(fs.writeFile)(fullPath, transformedContent)
+  }
+
+  /**
+   * Generates the final content for this post.
+   * - if markdown, transforms into HTML.
+   * - otherwise, assumes HTML.
+   */
+  generateContent(post: Post) {
+    const suffix = post.file.split(".").pop();
+    if ((suffix || "").toLowerCase() == "md") {
+      return marked(post.content)
+    } else {
+      return post.content
+    }
   }
 
   async writeManifest(contentType: string, posts: Array<Post>) {
@@ -83,7 +97,7 @@ class Precompiler {
       .sort((a, b) => b.date.valueOf() - a.date.valueOf()) //descending order by date
       .map(p => p.toSummary())
 
-    let outPath = `${config.targetDir}/${contentType}.json`
+    let outPath = `${config.targetDir}/${config.sourceDir}/${contentType}.json`
 
     await promisify(fs.writeFile)(outPath, JSON.stringify(index))
   }
@@ -99,7 +113,7 @@ class Precompiler {
 
 console.log("Precompiling")
 
-let config = new Config("content", "public/content");
+let config = new Config("content", "public");
 
 new Precompiler(config).run().catch((reason) => {
   console.log(reason)
