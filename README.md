@@ -11,8 +11,7 @@ npm run precompile
 npm run build
 ```
 
-# development
-
+# Development
 
 ### Compiles and hot-reloads for development
 ```
