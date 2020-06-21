@@ -18,17 +18,22 @@ class Store {
 
     private manifest: PostSummary[]|null = null;
 
-    public async fetchPosts(tag: string | null = null) {
-        let toFetch = (await this.getManifest());
+    public async fetchPostsByTag(tag: string | null = null) {
+        this.fetchPostsByFilter((post: PostSummary) => {
+            if (tag === null) {
+                return !post.tags.includes('draft');
+            } else {
+                return post.tags.includes(tag);
+            }
+        });
+    }
 
-        if (tag !== null) {
-            toFetch = toFetch.filter((post) => post.tags.includes(tag));
-        }
+    public async fetchPostsByTitle(title: string) {
+        this.fetchPostsByFilter((post: PostSummary) => post.title === title);
+    }
 
-        if (tag !== 'draft') {
-            toFetch = toFetch.filter((post) => !post.tags.includes('draft'));
-        }
-
+    private async fetchPostsByFilter(filter: (p: PostSummary) => boolean) {
+        const toFetch = (await this.getManifest()).filter((post) => filter(post));
         this.data.posts = await Promise.all(toFetch.map(async (p) => this.fetchPostData(p)));
     }
 

@@ -1,7 +1,11 @@
 <template>
   <div class="post">
-    <h1>{{ summary.title }}</h1>
-    <div class="postinfo"> {{ formattedDate}} - 
+    <h1 class="post-title">
+      <router-link :to="'/posts/' + summary.title">
+        {{ summary.title }}
+      </router-link>
+    </h1>
+    <div class="post-info"> {{ formattedDate}} - 
       <li class="tag-link" v-for="tag in tags" :key="tag">
         <router-link :to="'/tags/' + tag">
           {{tag}}
@@ -59,13 +63,18 @@ export default Vue.component('Post', {
 
 <!-- Because this is scoped, it doesn't apply to the v-html post itself -->
 <style scoped>
-.postinfo {
+.post-info {
   font-size: 14px;
   font-family: Verdana, Arial, sans-serif;
   color:rgba(0, 0, 0, 0.55);
 }
 
-h1 {
+.post-title a {
+  text-decoration: none;
+  color: rgb(65, 78, 100)
+}
+
+.post-title {
   margin: 0;
 }
 

@@ -9,7 +9,8 @@ Vue.config.productionTip = false;
 const router = new VueRouter({
   routes: [
     { path: '/', component: App },
-    { path: '/tags/:tag', component: App }
+    { path: '/tags/:tag', component: App },
+    { path: '/posts/:title', component: App}
   ]
 });
 

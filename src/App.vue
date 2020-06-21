@@ -18,12 +18,20 @@ document.title = 'Arron Norwell';
 
 const store = new Store();
 
+function fetchPosts(params: any) {
+  if (params.title) {
+    store.fetchPostsByTitle(params.title);
+  } else {
+    store.fetchPostsByTag(params.tag);
+  }
+}
+
 export default Vue.component('app', {
   components: {
     Post,
   },
   data: () => store.data,
-  created(): void { store.fetchPosts(this.$route.params.tag);  },
+  created(): void { fetchPosts(this.$route.params);  },
   computed: {
     tag(): string {
       return this.$route.params.tag;
@@ -31,7 +39,7 @@ export default Vue.component('app', {
   },
   watch: {
     $route(to, from): void {
-      store.fetchPosts(this.$route.params.tag);
+      fetchPosts(this.$route.params);
 
     }
   }
