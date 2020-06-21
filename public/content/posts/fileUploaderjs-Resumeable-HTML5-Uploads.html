@@ -1,0 +1,58 @@
+<h2 style="box-sizing: border-box; margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+	fileUploader.js</h2>
+<p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 16px; color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+	<a href="https://github.com/ANorwell/nginx-resumeable-upload">fileUploader.js</a>&nbsp;is a javascript library designed to interact with <a href="http://www.grid.net.ru/nginx/upload.en.html">nginx&#39;s upload module</a>, allowing for resumeable uploads.The js library works as follows:</p>
+<pre style="box-sizing: border-box; overflow: auto; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 14px; margin-top: 0px; margin-bottom: 16px; font-stretch: normal; line-height: 1.45; padding: 16px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; word-wrap: normal; color: rgb(51, 51, 51); background-color: rgb(247, 247, 247);">
+<code style="box-sizing: border-box; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-stretch: normal; line-height: inherit; padding: 0px; margin: 0px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; word-break: normal; border: 0px; display: inline; word-wrap: normal; background: transparent;">var uploader = fileUploader(file, segmentSize, sessionId)
+</code></pre>
+<p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 16px; color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+	where&nbsp;<code style="box-sizing: border-box; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 14px; font-stretch: normal; line-height: normal; padding: 0.2em 0px; margin: 0px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; background-color: rgba(0, 0, 0, 0.0392157);">file</code>&nbsp;is a File object from the HTML5 File API,&nbsp;<code style="box-sizing: border-box; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 14px; font-stretch: normal; line-height: normal; padding: 0.2em 0px; margin: 0px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; background-color: rgba(0, 0, 0, 0.0392157);">segmentSize</code>&nbsp;is the size in bytes of each segment of an upload, and&nbsp;<code style="box-sizing: border-box; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 14px; font-stretch: normal; line-height: normal; padding: 0.2em 0px; margin: 0px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; background-color: rgba(0, 0, 0, 0.0392157);">sessionId</code>&nbsp;is the sessionId used to represent this file upload (must be unique!). The methods of the uploader object return&nbsp;<a href="https://github.com/petkaantonov/bluebird" style="box-sizing: border-box; color: rgb(65, 131, 196); text-decoration: none; background: transparent;">Bluebird Promises/A+</a>; which may be interacted with using&nbsp;<a href="https://github.com/petkaantonov/bluebird/blob/master/API.md" style="box-sizing: border-box; color: rgb(65, 131, 196); text-decoration: none; background: transparent;">this API</a>. It offers the following methods:</p>
+<ul class="task-list" style="box-sizing: border-box; padding: 0px 0px 0px 2em; margin-top: 0px; margin-bottom: 16px; color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+	<li style="box-sizing: border-box;">
+		<p style="box-sizing: border-box; margin-top: 16px; margin-bottom: 16px;">
+			<code style="box-sizing: border-box; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 14px; font-stretch: normal; line-height: normal; padding: 0.2em 0px; margin: 0px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; background-color: rgba(0, 0, 0, 0.0392157);">uploader.fetchStatus()</code>: returns a promise for a status object, which has the following structure:</p>
+		<pre style="box-sizing: border-box; overflow: auto; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 14px; margin-top: 0px; margin-bottom: 16px; font-stretch: normal; line-height: 1.45; padding: 16px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; word-wrap: normal; background-color: rgb(247, 247, 247);">
+<code style="box-sizing: border-box; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-stretch: normal; line-height: inherit; padding: 0px; margin: 0px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; word-break: normal; border: 0px; display: inline; word-wrap: normal; background: transparent;">  {
+    completed : [true|false],
+    start : &lt;The first byte uploaded. Should always be 0&gt;
+    end : &lt;The last byte uploaded&gt;
+    total : &lt;The total size of the file in bytes&gt;
+  }
+</code></pre>
+		<p style="box-sizing: border-box; margin-top: 16px; margin-bottom: 16px;">
+			<code style="box-sizing: border-box; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 14px; font-stretch: normal; line-height: normal; padding: 0.2em 0px; margin: 0px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; background-color: rgba(0, 0, 0, 0.0392157);">completed</code>&nbsp;should be true if and only if&nbsp;<code style="box-sizing: border-box; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 14px; font-stretch: normal; line-height: normal; padding: 0.2em 0px; margin: 0px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; background-color: rgba(0, 0, 0, 0.0392157);">end === total - 1</code>.</p>
+	</li>
+	<li style="box-sizing: border-box;">
+		<p style="box-sizing: border-box; margin-top: 16px; margin-bottom: 16px;">
+			<code style="box-sizing: border-box; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 14px; font-stretch: normal; line-height: normal; padding: 0.2em 0px; margin: 0px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; background-color: rgba(0, 0, 0, 0.0392157);">uploader.uploadSegments(status, onSegmentComplete)</code>: given a status object, will upload the remaining segments of the file.&nbsp;<code style="box-sizing: border-box; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 14px; font-stretch: normal; line-height: normal; padding: 0.2em 0px; margin: 0px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; background-color: rgba(0, 0, 0, 0.0392157);">onSegmentComplete(newStatus)</code>&nbsp;will be called after each segment is uploaded, with a status argument reflecting the new state. It returns a promise with the completed status.</p>
+	</li>
+</ul>
+<p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 16px; color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+	Thus, to upload a file, one may do:</p>
+<pre style="box-sizing: border-box; overflow: auto; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 14px; margin-top: 0px; margin-bottom: 16px; font-stretch: normal; line-height: 1.45; padding: 16px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; word-wrap: normal; color: rgb(51, 51, 51); background-color: rgb(247, 247, 247);">
+<code style="box-sizing: border-box; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-stretch: normal; line-height: inherit; padding: 0px; margin: 0px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; word-break: normal; border: 0px; display: inline; word-wrap: normal; background: transparent;">  uploader.fetchStatus()
+      .then(function(status) {
+          uploader.uploadSegments(status, function(newStatus) {});
+      })
+      .then( function(status) { console.log(&quot;upload complete&quot;); } );</code></pre>
+<h2 style="box-sizing: border-box; margin-top: 1em; margin-bottom: 16px; line-height: 1.225; font-size: 1.75em; position: relative; padding-bottom: 0.3em; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;">
+	Design</h2>
+<p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 16px; color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+	Resumable uploads in the upload module work in the following way:</p>
+<ol class="task-list" style="box-sizing: border-box; padding: 0px 0px 0px 2em; margin-top: 0px; margin-bottom: 16px; color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+	<li style="box-sizing: border-box;">
+		<p style="box-sizing: border-box; margin-top: 16px; margin-bottom: 16px;">
+			Uploaded segments of a single file should share a session ID to identify them as part of the same file.</p>
+	</li>
+	<li style="box-sizing: border-box;">
+		<p style="box-sizing: border-box; margin-top: 16px; margin-bottom: 16px;">
+			When a segment of a file is uploaded, it will return a status in the body, e.g. 0-5,9-15/24, indicating that the file is 24 bytes long, and bytes 0-5 and 9-15 have been uploaded. Partial uploads will get a 201 response.</p>
+	</li>
+	<li style="box-sizing: border-box;">
+		<p style="box-sizing: border-box; margin-top: 16px; margin-bottom: 16px;">
+			Segments may be reuploaded, as long as it is not in parallel, and the segments have the same data for that segment.</p>
+	</li>
+</ol>
+<p style="box-sizing: border-box; margin-top: 0px; margin-bottom: 16px; color: rgb(51, 51, 51); font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+	The fileUploader js library will attempt a small upload (the first 2 bytes of a file; it turns out the upload module has a bug wherein it will not handle repeated uploads of the single byte of a file) to get the status of an upload. From that starting status, the uploader will incrementally upload the file in 1MB segments.</p>
+

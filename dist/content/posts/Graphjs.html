@@ -1,0 +1,63 @@
+<script type="text/javascript">embed("graph/graph.js", "jsdiv")</script>
+<script type="text/javascript">embed("graph/tutorial.js","jsdiv")</script>
+<div id="jsdiv"></div>
+<style type="text/css">
+      .graph { border-style:solid;border-width:1px;display:block;margin-left:auto;margin-right:auto;}
+    </style>
+
+     <div>
+      <canvas class="graph" width="180" height="150" id="ex1"></canvas>
+    </div>
+
+    <h3>Basic Usage</h3>
+
+    <p>
+      <a href="http://github.com/ANorwell/graph">Graph.js</a> is a tool for creating editable graphs on the HTML canvas element. Vertices and edges are created by clicking on the canvas. Initializing a graph is simple:
+    </p>
+    <script type="text/javascript"> embed("https://gist.github.com/761390.js?file=gistfile1.js", "gist1")</script>
+    <div id="gist1"></div>
+
+    <p>Graph.js supports JSON serialization, meaning that the vertex and edge information of a graph can be saved and loaded.</p>
+
+    <script type="text/javascript"> embed("https://gist.github.com/761394.js?file=gistfile1.js", "gist2")</script>
+    <div id="gist2"></div>
+
+    <p>Graphs may also be saved and loaded from <a href="http://diveintohtml5.org/storage.html">Local Storage</a>.
+    </p>
+    
+   <script type="text/javascript"> embed("https://gist.github.com/761414.js?file=gistfile1.js", "gist3")</script>
+   <div id="gist3"></div>
+
+    <p>Graph.js supports graphs that are editable: that is, vertices can be added and moved, as in the example below (try clicking and dragging a vertex).</p>
+
+    <div>
+      <canvas class="graph"  width="180" height="150" id="ex2"></canvas>
+    </div>
+
+    <p>Making a graph editable is also very easy:</p>
+    <script type="text/javascript"> embed("https://gist.github.com/761411.js?file=gistfile1.js", "gist4")</script>
+    <div id="gist4"></div>
+
+    <h3>Configuration Options</h3>
+
+    <p> Graph.js is designed to be customizeable. The <strong>setOption</strong> command provides several configurable settings, including <em>vertexDrawFunction</em>, <em>edgeDrawFunction</em>, and <em>physics</em>. The following code snippet gives a usage example:</p>
+ 
+    <script type="text/javascript"> embed("https://gist.github.com/761421.js?file=gistfile1.js", "gist5")</script>
+    <div id="gist5"></div>
+ 
+    <p> The vertex and edge draw functions shown above give the following result:</p> 
+
+    <div>
+      <canvas class="graph"  width="180" height="150" id="ex3"></canvas>
+    </div>
+
+    <p>As well, the underlying graph structure can be manipulated programmatically by accessing and modifying the <strong>graph</strong> member object of the Graph.js Graph class. This writeup won't go into detail about this process.</p>
+
+    <h3>Server-side storage</h3>
+
+    <p>The JSON serialization lends itself naturally to server-side storage of graphs. This allows a graph to be constructed using a graph creation application such as the one I created <a href="http://anorwell.com/graph/?gid=34">here</a>, and then displayed later in a different format (for example, as a static illustration, such as the ones on this page. </p>
+
+    <p>The following code snippet illustrates how a script might fetch a graph, indexed by an id, from a server.</p>
+    <script type="text/javascript"> embed("https://gist.github.com/761427.js?file=gistfile1.js", "gist6")</script>
+    <div id="gist6"></div>
+
