@@ -99,5 +99,4 @@ export default Vue.component('Post', {
   padding: 1em;
 }
 
-
 </style>
