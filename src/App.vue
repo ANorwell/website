@@ -76,6 +76,8 @@ export default Vue.component('app', {
   background: rgb(65,78,100);
   color: white;
   border-radius: 6px;
-  font-weight: 600
+  font-weight: 600;
+  cursor: pointer
 }
+
 </style>
