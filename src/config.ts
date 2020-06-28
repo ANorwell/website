@@ -13,4 +13,4 @@ export default {
    * The abolute path to the content to display.
    */
   postsPath: '/content/posts.json'
-}
+};
