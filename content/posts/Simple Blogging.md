@@ -5,3 +5,5 @@ tags: tutorial, quickblog
 ---
 
 QuickBlog is a dead simple and easy to use blogging tool.
+
+## Setting up
