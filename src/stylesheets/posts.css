@@ -34,11 +34,12 @@ body {
 #top {
   margin-top: 0 !important;
   padding-top: 0 !important;
-  background-color: rgb(8, 100, 187);
+  background-color: rgba(8, 100, 187);
   height: 3em;
   top: 50%;
   vertical-align: middle;
   padding-left: 2em;
   display: flex;
   align-items: center;
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.4);
 }

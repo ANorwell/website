@@ -27,9 +27,9 @@
 }
 
 .post {
-  border: 1px solid rgb(175, 175, 175);
+  border: 1px solid rgba(175, 175, 175, 0.3);
   box-shadow:Z 5px #dddddd;
-  box-shadow: 2px 2px 2px 1px rgba(197, 197, 199, 1);
+  box-shadow: 2px 2px 2px 1px rgba(197, 197, 199, 0.2);
   margin: 2em;
   padding: 1em;
 }
