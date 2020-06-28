@@ -20,7 +20,9 @@ Quickblog differs from many other static site generators in that it generates a 
 
 ## Setting up
 
-First, sign up for a [github](github.com) account if you don't already have one. Then, fork the [quickblog repository](https://github.com/anorwell/quickblog) by clicking the fork button in the top right. 
+First, sign up for a [github](github.com) account if you don't already have one. Then, fork the [quickblog repository](https://github.com/anorwell/quickblog) by clicking the fork button in the top right.
+
+Now, you need to enable github pages for the repository you have created. To do this, click on settings and scroll down to the "Github Pages" section. Under source, re-select `gh-pages branch`. This will already be selected, but you need to re-select it to actually enable the feature.
 
 You have just created your blog! It will live at [USERNAME.github.io/quickblog](USERNAME.github.io/quickblog) (but may not show up until you publish your first post). You may create a different URL -- see the configuration section below.
 
