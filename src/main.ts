@@ -4,8 +4,6 @@ import App from './App.vue';
 
 Vue.config.productionTip = false;
 
-
-
 const router = new VueRouter({
   routes: [
     { path: '/', component: App },

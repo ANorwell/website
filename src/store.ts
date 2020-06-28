@@ -1,7 +1,5 @@
 import moment, { Moment } from 'moment';
 
-const pageSize = 10;
-
 interface PostSummary {
     path: string;
     title: string;
@@ -14,6 +12,8 @@ class PostData {
 }
 
 class Store {
+    constructor(private readonly postsPath: string, private readonly postsPerPage: number) {}
+    
     public data = {
          loadedPosts: [] as PostData[],
          postSummaries: [] as PostSummary[],
@@ -37,7 +37,7 @@ class Store {
 
     public async fetchMore() {
         const lastPostIndex = this.data.loadedPosts.length;
-        const nextPage = this.data.postSummaries.slice(lastPostIndex, lastPostIndex + pageSize);
+        const nextPage = this.data.postSummaries.slice(lastPostIndex, lastPostIndex + this.postsPerPage);
         const loaded = await Promise.all(nextPage.map(async (p) => this.fetchPostData(p)));
         this.data.loadedPosts = this.data.loadedPosts.concat(loaded);
     }
@@ -50,7 +50,7 @@ class Store {
 
     private async getManifest(): Promise<PostSummary[]> {
         if (this.manifest === null) {
-            const out: PostSummary[] = await (await fetch('/content/posts.json')).json();
+            const out: PostSummary[] = await (await fetch(this.postsPath)).json();
             this.manifest = out;
         }
         this.manifest.forEach((p) => p.date = moment(p.date));

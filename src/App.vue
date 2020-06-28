@@ -1,5 +1,12 @@
 <template>
   <div>
+    <div id="header">
+      <div id="top">
+        <div id="header-title">
+          <h2><a href="/#/">{{ title }}</a></h2>
+        </div>
+      </div>
+    </div>    
     <div class="posts">
       <Post
         v-for="post in loadedPosts"
@@ -8,7 +15,7 @@
         v-bind:content="post.content"
       ></Post>
     </div>
-    <div class="load-more" v-if="loadedPosts.length < postSummaries.length">
+    <div class="load-more" v-if="(loadedPosts.length > 0) && (loadedPosts.length < postSummaries.length)">
       <button class="load-more-button" v-on:click="fetchMore()">Load Older Posts</button>
     </div>
   </div>
@@ -18,10 +25,11 @@
 import Vue from 'vue';
 import Post from './components/Post.vue';
 import Store from './store';
+import config from './config';
 
-document.title = 'Arron Norwell';
+document.title = config.title;
 
-const store = new Store();
+const store = new Store(config.postsPath, config.postsPerPage);
 
 function fetchPosts(params: any) {
   if (params.title) {
@@ -40,6 +48,9 @@ export default Vue.component('app', {
   computed: {
     tag(): string {
       return this.$route.params.tag;
+    },
+    title(): string {
+      return config.title;
     }
   },
   watch: {
@@ -50,34 +61,10 @@ export default Vue.component('app', {
   },
   methods: {
     fetchMore(): void {
-      store.fetchMore()
+      store.fetchMore();
     }
   }
 });
 </script>
 
-<style>
-.posts {
-  font-family: Verdana, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-}
-
-.load-more {
-  margin: 2em;
-}
-
-.load-more-button {
-  display: inline-block;
-  font-family: Verdana, Arial, sans-serif;
-  padding: 0.5rem 1rem;
-  border: 0px;
-  background: rgb(65,78,100);
-  color: white;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer
-}
-
-</style>
+<style src="./stylesheets/posts.css"></style>
