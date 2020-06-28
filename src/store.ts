@@ -12,14 +12,14 @@ class PostData {
 }
 
 class Store {
-    constructor(private readonly postsPath: string, private readonly postsPerPage: number) {}
-    
     public data = {
          loadedPosts: [] as PostData[],
          postSummaries: [] as PostSummary[],
     };
 
     private manifest: PostSummary[]|null = null;
+
+    constructor(private readonly postsPath: string, private readonly postsPerPage: number) {}
 
     public async fetchPostsByTag(tag: string | null = null) {
         this.fetchPostsByFilter((post: PostSummary) => {

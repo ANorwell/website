@@ -34,6 +34,12 @@ jobs:
         ssh-add -l
         ssh -vv -o "StrictHostKeyChecking=no" anorwell@$DEPLOY_HOST 'echo hello'
         rsync -rv ./dist/* anorwell@$DEPLOY_HOST:/www/
+    - name: Deploy gh pages 🚀
+      uses: JamesIves/github-pages-deploy-action@releases/v3
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages # The branch the action should deploy to.
+        FOLDER: dist # The folder the action should deploy.
     - name: Archive production artifacts
       uses: actions/upload-artifact@v1
       with:

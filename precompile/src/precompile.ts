@@ -70,12 +70,13 @@ class Precompiler {
 
   async writeContent(post: Post): Promise<void> {
     const fullPath = `${config.targetDir}/${post.file}`
-    console.log(fullPath)
     const directory = path.dirname(fullPath)
     const transformedContent = this.generateContent(post)
 
     await promisify(fs.mkdir)(directory, { recursive: true })
     await promisify(fs.writeFile)(fullPath, transformedContent)
+
+    console.log(" ", fullPath)
   }
 
   /**
@@ -100,6 +101,8 @@ class Precompiler {
     let outPath = `${config.targetDir}/${config.sourceDir}/${contentType}.json`
 
     await promisify(fs.writeFile)(outPath, JSON.stringify(index))
+
+    console.log("  Manifest: ", outPath)
   }
 
   async parseContent(path: string): Promise<Post> {
