@@ -9,7 +9,9 @@ QuickBlog is a dead simple and easy to use blogging tool. Anyone with a [github]
 
 ## Setting up
 
-First, sign up for a [github](github.com) account if you don't already have one. Then, fork the [quickblog repository](https://github.com/anorwell/quickblog) by clicking the fork button in the top right. You have just created your blog!
+First, sign up for a [github](github.com) account if you don't already have one. Then, fork the [quickblog repository](https://github.com/anorwell/quickblog) by clicking the fork button in the top right. 
+
+You have just created your blog! It will live at [<username>.github.io/quickblog](<username>.github.io/quickblog) (but may not show up until you publish your first post).
 
 ### Adding content
 
@@ -28,5 +30,4 @@ This is my first post.
 ### This is a sub-header
 
 More content goes here.
-
 ```
