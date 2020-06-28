@@ -27,15 +27,9 @@
 }
 
 .post {
-<<<<<<< HEAD
-  border: 1px solid rgb(175, 175, 175);
-  box-shadow:Z 5px #dddddd;
-  box-shadow: 2px 2px 2px 1px rgba(197, 197, 199, 1);
-=======
   border: 1px solid rgba(175, 175, 175, 0.3);
   box-shadow:Z 5px #dddddd;
   box-shadow: 2px 2px 2px 1px rgba(197, 197, 199, 0.2);
->>>>>>> quickblog/master
   margin: 2em;
   padding: 1em;
 }

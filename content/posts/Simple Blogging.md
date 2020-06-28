@@ -1,7 +1,7 @@
 ---
 title: "QuickBlog"
 date: "2020-06-28"
-tags: tutorial, quickblog
+tags: tutorial, projects, website
 ---
 
 QuickBlog is a dead simple and easy to use blogging tool. Anyone with a [github](github.com) account can use it to start blogging within minutes. Once a post has been written (in markdown or HTML format), it will be automatically published to a github pages website. Unlike blogging platforms like medium or tumblr, you own the content you create [[1]](#footnotes).
