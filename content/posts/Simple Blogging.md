@@ -6,7 +6,8 @@
 <p>If flexibility or customizability are important to you, you should probably consider other tools.</p>
 <p>Quickblog differs from many other static site generators in that it generates a single page application. </p>
 <h2 id="setting-up">Setting up</h2>
-<p>First, sign up for a <a href="github.com">github</a> account if you don&#39;t already have one. Then, fork the <a href="https://github.com/anorwell/quickblog">quickblog repository</a> by clicking the fork button in the top right. </p>
+<p>First, sign up for a <a href="github.com">github</a> account if you don&#39;t already have one. Then, fork the <a href="https://github.com/anorwell/quickblog">quickblog repository</a> by clicking the fork button in the top right.</p>
+<p>Now, you need to enable github pages for the repository you have created. To do this, click on settings and scroll down to the &quot;Github Pages&quot; section. Under source, re-select <code>gh-pages branch</code>. This will already be selected, but you need to re-select it to actually enable the feature.</p>
 <p>You have just created your blog! It will live at <a href="USERNAME.github.io/quickblog">USERNAME.github.io/quickblog</a> (but may not show up until you publish your first post). You may create a different URL -- see the configuration section below.</p>
 <h3 id="adding-content">Adding content</h3>
 <p>To author a post, navigate to the <code>content/posts</code> directory in your quickblog project on github and click the add file button in the top right. Every post must contain a front-matter section with a title, date, and optional tags. Following that comes the content of the post, which can be either markdown or HTML. This is easiest to show with an example:</p>
