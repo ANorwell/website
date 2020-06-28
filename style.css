@@ -1,0 +1,164 @@
+html,body {
+            margin: 0;
+            padding: 0;
+            height: 100%;   
+            background-color:#CFE2F8;
+            font: normal normal normal medium "TeX Gyre Schola","Georgia","Bitstream Charter","Century Schoolbook L","Liberation Serif","Times",serif;
+            color: #444;
+            }
+
+/* The "content-box", which pushes the footer down */
+#wrapper {
+           position:relative;
+           height:auto;
+           min-height: 100%;
+           margin-left:10px;
+           }
+
+#upperbarrier {
+                height:10px;
+                width:100%;
+                }
+
+.footerpad {
+             padding-bottom:2em;
+             }
+.footer {
+          font-size:0.7em;
+          font-family:sans-serif;
+          text-align:center;
+          clear: both;
+          position: relative;
+          z-index: 10;
+          height: 2em;
+          margin-top: -2em;
+          width:100%;
+          }
+
+.menu {
+        background-color: #FFFFFF;
+        text-align:center;
+        padding:4px;
+        box-shadow: 1px 1px 2px #000000;
+        -moz-box-shadow: 1px 1px 2px #000000;
+        -webkit-box-shadow: 1px 1px 2px #000000;
+
+
+        }
+
+.main {
+        background-color: #FFFFFF;
+        margin:10px;
+        margin-left: 220px;
+        padding:10px;
+        padding-left:10px;
+        padding-right:20px;
+        padding-bottom:20px;
+        box-shadow: 1px 1px 2px #000000;
+        -moz-box-shadow: 1px 1px 2px #000000;
+        -webkit-box-shadow: 1px 1px 2px #000000;
+
+        }
+
+/* page spacing like main*/
+.comments {
+            margin:10px;
+            margin-left: 210px;
+            padding:10px;
+            padding-left:10px;
+            padding-right:20px;
+            padding-bottom:20px;
+            }
+
+/* inner box for fb comments, which have fixed width 500px */
+.commentsinner {
+                 margin-left:auto;
+                 margin-right:auto;
+                 width:500px;
+                 }
+
+.leftContainer {
+                 width:210px;
+                 float:left;
+                 }
+
+.logo {
+        border-width:1px;
+        border-style:solid;
+        border-color:#000000;
+        }
+
+.menutext {
+            font-size:18px;
+            font-weight:bold;
+            text-align:center;
+            }
+
+.menutext:hover {
+                  background-color:#6C96F1;
+                  }
+
+.allposts {
+            text-align:right;
+            padding-right:20px;
+            }
+
+.bigtitle {
+            font-family:Georgia,serif;
+            font-weight:bold;
+            color: #0066CC;
+            font-size:36px;
+            text-align:center;
+            margin-bottom:10px;
+            }
+
+h1 {
+     font-weight:bold;
+     color: #0066CC;
+     font-size:20px;
+
+     }
+
+h2 {
+     font-weight:bold;
+     color: #0066CC;
+     font-size:18px;
+     }
+
+h3 {
+     font-weight:bold;
+     color: #0066CC;
+     font-size:16px;
+     }
+
+/* block around the title of a main element post, holding the title, date, tags */
+.titleblock {
+              margin-bottom:1em;
+              margin-top:0.2em;
+              
+              }
+
+.title {
+         text-align:left;
+         display:inline;
+         margin:0;
+         }
+
+.date {
+        text-align:right;
+        float:right;
+        display:inline;
+        margin:0;
+        }
+
+p {
+    margin:0.5em;
+    font-size:19px;
+    line-height:25px;
+    }
+
+ul {
+     margin-left: 2em;
+     }
+
+

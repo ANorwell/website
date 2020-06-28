@@ -1,0 +1,50 @@
+<p>
+	An immutable data structure is one that cannot be modified after it is created. This seems to imply that any changes to the data structure require the entire object to be copied into the new, modified object. However, that&#39;s not the case. It&#39;s easiest to see why with a simple example:</p>
+<h3>
+	Linked Lists</h3>
+<p>
+	Consider an immutable singly-linked linked list:</p>
+<p>
+	<strong><code>d -&gt; c -&gt; b -&gt; a</code></strong></p>
+<p>
+	Let&#39;s call this list <strong>L</strong>. <strong>L</strong>&nbsp;can be stored with just a reference to the head of the list, the element&nbsp;<strong>d</strong>.&nbsp;Suppose we want to add an element (&quot;<strong>e</strong>&quot;) to the head of the list, creating the new list <strong>L&#39;</strong>:</p>
+<p>
+	<strong style="font-family: monospace;">e </strong><strong style="font-family: monospace;">-&gt;</strong><strong style="font-family: monospace;"> </strong><strong style="font-family: monospace;">d</strong><span style="font-family: monospace;">&nbsp;<strong>-&gt;</strong>&nbsp;</span><strong style="font-family: monospace;">c</strong><span style="font-family: monospace;">&nbsp;<strong>-&gt;</strong>&nbsp;</span><strong style="font-family: monospace;">b</strong><span style="font-family: monospace;">&nbsp;<strong>-&gt;</strong>&nbsp;</span><strong style="font-family: monospace;">a</strong></p>
+<p>
+	We now have two lists: <strong>L&#39;</strong> (starting at the element <strong>e</strong>) and <strong>L</strong> (starting at the element <strong>d</strong>). We did not have to copy <strong>L </strong>to a new list to create <strong>L&#39;</strong>.&nbsp;</p>
+<p>
+	Now, suppose we want to add a list to the <em>end</em> of L: If we add it directly:</p>
+<p>
+	<strong><span style="font-family: monospace;">d</span><span style="font-family: monospace;">&nbsp;-&gt;&nbsp;</span><span style="font-family: monospace;">c</span><span style="font-family: monospace;">&nbsp;-&gt;&nbsp;</span><span style="font-family: monospace;">b</span><span style="font-family: monospace;">&nbsp;-&gt;&nbsp;</span><span style="font-family: monospace;">a -&gt; x</span></strong></p>
+<p>
+	Then we will have modified <strong>L</strong>, because anyone accessing <strong>L</strong> (starting at <strong>d</strong>) now has an extra element on the the end of their list. To add an element to the end of <strong>L</strong>, we need to fully copy it:</p>
+<p>
+	<strong><span style="font-family: monospace;">d&nbsp;-&gt;&nbsp;</span><span style="font-family: monospace;">c</span><span style="font-family: monospace;">&nbsp;-&gt;&nbsp;</span><span style="font-family: monospace;">b</span><span style="font-family: monospace;">&nbsp;-&gt;&nbsp;</span><span style="font-family: monospace;">a</span><br />
+	<span style="font-family: monospace;">d</span><span style="font-family: monospace;">&nbsp;-&gt;&nbsp;</span><span style="font-family: monospace;">c</span><span style="font-family: monospace;">&nbsp;-&gt;&nbsp;</span><span style="font-family: monospace;">b</span><span style="font-family: monospace;">&nbsp;-&gt;&nbsp;a -&gt; x</span></strong></p>
+<p>
+	What&#39;s the difference between adding to the head of the list, and adding to the tail? No elements in <strong>L</strong> have pointers to the element <strong>a</strong>, but all the elements in <strong>L</strong> have pointers to the element <strong>x</strong>.</p>
+<h3>
+	General Immutable Data Structures</h3>
+<p>
+	We can generalize idea into a rule for general immutable data structures, as follows. Given two elements <strong>x</strong>, <strong>y</strong> in a data structure, say that <b>y</b>&nbsp;is reachable from<strong> x</strong> if there is a directed path of pointers from <strong>x</strong> to <strong>y</strong>. In the linked list <strong>L</strong> above, <strong>a</strong> is reachable from <strong>d</strong>, but <strong>c</strong> is not reachable from <strong>b</strong>. The rule is:</p>
+<blockquote>
+	<p>
+		When modifying an immutable data structure at a given position, we must copy all elements from which that position is reachable.</p>
+</blockquote>
+<p>
+	In our linked list example, a modification to <strong>b</strong> requires <strong>d</strong> and <strong>c</strong> to be copied--but not <strong>a</strong>.</p>
+<p>
+	This idea turns out to be quite powerful. It implies that the immutable data structures which take the least time and space to modify are those containing only short paths.&nbsp;In a binary tree, modifying (that is, inserting, deleting, or changing the value of) a node requires that only the ancestors of the node being modified be copied to the new structure. This implies that creating a new binary tree with a modified element takes O(log n) time and space (assuming the original tree is balanced). Trees with higher fanout are even better: A tree with a fan-out of 64 and height of 10 can contain over 10<sup>17&nbsp;</sup>elements, but modifying such a tree to create a new one takes only O(1) time and space. In fact, <a href="http://www.scala-lang.org/api/current/scala/collection/immutable/Vector.html">Scala&#39;s immutable Vector data structure</a>&nbsp;use a structure like this.</p>
+<h3>
+	Why You Should Use Immutable Data Structures</h3>
+<ul>
+	<li>
+		They&#39;re inherently thread-safe.</li>
+	<li>
+		You can always copy an immutable object &quot;by reference&quot;, because it will never change on you.</li>
+	<li>
+		Code using immutable object is easier to read. After an immutable object is assigned to a value, it will never change.</li>
+	<li>
+		As discussed above, performance is often comparable to that of mutable data structures.</li>
+</ul>
+

@@ -1,0 +1,25 @@
+<p>
+	<a href="https://github.com/ANorwell/stieltjes">Stieltjies</a> is a minimal, UDP-only, <a href="http://netty.io">Netty</a>-based Scala client for <a href="http://riemann.io">Riemann</a>, the events and monitoring system for distributed systems.</p>
+<pre class="brush: scala">
+    import stieltjes._
+
+    val client = new UdpRiemannClient(&quot;127.0.0.1&quot;)
+    client.write(
+      Event(Host(&quot;myhost&quot;), Service(&quot;server&quot;), State(&quot;ok&quot;), Metric(3.0F)))
+</pre>
+<p>
+	By default, the client uses client port 5556 and server port 5555.</p>
+<p>
+	Events are immutable, but can be used as templates for other events:</p>
+<pre class="brush: scala">
+    val defaultEvent = Event(Host(&quot;myhost&quot;), Service(&quot;server&quot;), State(&quot;ok&quot;), Ttl(20))
+    ...
+    client.write(defaultEvent(State(&quot;critical&quot;), Metric(1000L), Description(&quot;critical error&quot;)))
+</pre>
+<h4>
+	Caveats</h4>
+<p>
+	Because Stieltjes uses UDP, event delivery is not guaranteed. This should be used for high-volume stats tracking, rather than error reporting.</p>
+<p>
+	Because events are sent as fire-and-forget UDP packets, there is no mechanism for detecting if the Riemann server is down.</p>
+
