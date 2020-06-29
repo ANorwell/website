@@ -10,4 +10,4 @@ npm run precompile
 npm run build
 ```
 
-It uses [quickblog](github.com/anorwell/quickblog), which I created.
+It uses [quickblog](https://github.com/anorwell/quickblog), which I created.
